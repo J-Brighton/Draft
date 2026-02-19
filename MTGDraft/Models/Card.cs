@@ -10,7 +10,6 @@ public class Card
 
     public string SetCode { get; set; } = "";
     
-
     public int CardNumber { get; set; }
 
 }
