@@ -1,0 +1,38 @@
+GET http://localhost:5189/DraftSession/
+
+###
+
+POST http://localhost:5189/DraftSession/
+Content-Type: application/json
+
+{
+    "setCode": "ECL",
+    "createdAt": "2026-02-19T00:00:00Z",
+    "playerCount": 8
+}
+
+###
+
+POST http://localhost:5189/cards
+Content-Type: application/json
+
+{
+    "name": "",
+    "rarity": "Common",
+    "isFoil": true
+}
+
+###
+
+PUT http://localhost:5189/cards/1
+Content-Type: application/json
+
+{
+    "name": "Swords to Plowshares",
+    "rarity": "Common",
+    "isFoil": true
+}
+
+###
+
+GET http://localhost:5189/cards/pool?rarity=Uncommon
