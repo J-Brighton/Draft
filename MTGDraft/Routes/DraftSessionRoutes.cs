@@ -27,6 +27,7 @@ public static class DraftSessionRoutes
         });
 
         // get a specific draft session
+        
 
         // create a draft session
         group.MapPost("/", async (AddDraftSessionDTO dto, DraftSessionService service) => {
