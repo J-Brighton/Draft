@@ -8,6 +8,7 @@ public class DraftSession
 
     public DateTime CreatedAt { get; set; }
 
+
     public ICollection<Pack> Packs { get; set; } = new List<Pack>();
 
 }
