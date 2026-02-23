@@ -5,5 +5,6 @@ public record class CardDTO(
     string Name,
     string Rarity,
     string SetCode,
-    int CardNumber
+    int CardNumber,
+    int SetId
 );

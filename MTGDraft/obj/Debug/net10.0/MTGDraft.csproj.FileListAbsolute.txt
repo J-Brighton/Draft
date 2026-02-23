@@ -129,6 +129,7 @@ C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\MTGDraft.AssemblyInfoInputs.cache
 C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\MTGDraft.AssemblyInfo.cs
 C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\MTGDraft.csproj.CoreCompileInputs.cache
 C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\MTGDraft.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\MTGDraft.sourcelink.json
 C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\Jack\Draft\MTGDraft\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json

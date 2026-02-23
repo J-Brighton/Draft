@@ -12,4 +12,10 @@ public class Card
     
     public int CardNumber { get; set; }
 
+    // foreign key linking this card to its set
+    public int SetId { get; set; }
+
+    // navigation property for EF Core
+    public Set? Set { get; set; }
 }
+

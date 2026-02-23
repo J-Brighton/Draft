@@ -12,6 +12,7 @@ var app = builder.Build();
 
 app.MapCardsRoutes();
 app.MapDraftSessionRoutes();
+app.MapPackRoutes();
 
 using (var scope = app.Services.CreateScope())
 {

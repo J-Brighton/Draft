@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MTGDraft.Migrations
 {
     [DbContext(typeof(DraftContext))]
-    [Migration("20260219111750_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260223135559_Draft")]
+    partial class Draft
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace MTGDraft.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("SetId")
+                    b.Property<int>("SetId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -144,7 +144,9 @@ namespace MTGDraft.Migrations
                 {
                     b.HasOne("MTGDraft.Models.Set", "Set")
                         .WithMany("Cards")
-                        .HasForeignKey("SetId");
+                        .HasForeignKey("SetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Set");
                 });

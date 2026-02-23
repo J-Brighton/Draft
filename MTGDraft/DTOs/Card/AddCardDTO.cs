@@ -4,5 +4,6 @@ public record class AddCardDTO(
     string Name,
     string Rarity,
     string SetCode,
-    int CardNumber
+    int CardNumber,
+    int SetId
 );

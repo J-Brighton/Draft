@@ -13,26 +13,12 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:5189/cards
-Content-Type: application/json
-
-{
-    "name": "",
-    "rarity": "Common",
-    "isFoil": true
-}
+GET http://localhost:5189/DraftSession/1
 
 ###
 
-PUT http://localhost:5189/cards/1
-Content-Type: application/json
-
-{
-    "name": "Swords to Plowshares",
-    "rarity": "Common",
-    "isFoil": true
-}
+DELETE http://localhost:5189/DraftSession/4
 
 ###
 
-GET http://localhost:5189/cards/pool?rarity=Uncommon
+GET http://localhost:5189/Packs/10

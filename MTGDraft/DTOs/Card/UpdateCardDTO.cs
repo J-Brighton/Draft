@@ -5,5 +5,6 @@ public record class UpdateCardDTO(
     string Rarity,
     string SetCode,
     int CardNumber,
-    bool isFoil
+    bool isFoil,
+    int SetId
 );

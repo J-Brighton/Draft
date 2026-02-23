@@ -38,7 +38,7 @@ namespace MTGDraft.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("SetId")
+                    b.Property<int>("SetId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -141,7 +141,9 @@ namespace MTGDraft.Migrations
                 {
                     b.HasOne("MTGDraft.Models.Set", "Set")
                         .WithMany("Cards")
-                        .HasForeignKey("SetId");
+                        .HasForeignKey("SetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Set");
                 });

@@ -39,7 +39,8 @@ public static class SeedData
             Name = card.Name,
             Rarity = card.Rarity,
             CardNumber = card.CardNumber,
-            SetCode = set.Code
+            SetCode = set.Code,
+            SetId = set.Id
         }).ToList();
 
         Console.WriteLine($"Adding {cards.Count} cards to context");

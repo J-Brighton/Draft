@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MTGDraft.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Draft : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,7 +70,7 @@ namespace MTGDraft.Migrations
                     Rarity = table.Column<string>(type: "TEXT", nullable: false),
                     SetCode = table.Column<string>(type: "TEXT", nullable: false),
                     CardNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    SetId = table.Column<int>(type: "INTEGER", nullable: true)
+                    SetId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,7 +79,8 @@ namespace MTGDraft.Migrations
                         name: "FK_Cards_Sets_SetId",
                         column: x => x.SetId,
                         principalTable: "Sets",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,9 +91,9 @@ namespace MTGDraft.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     PackId = table.Column<int>(type: "INTEGER", nullable: false),
                     CardId = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsFoil = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsPicked = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PickedByPlayerId = table.Column<int>(type: "INTEGER", nullable: true),
-                    IsFoil = table.Column<bool>(type: "INTEGER", nullable: false)
+                    PickedByPlayerId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {

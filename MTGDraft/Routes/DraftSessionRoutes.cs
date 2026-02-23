@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using MTGDraft.Data;
+using MTGDraft.DTOs.Card;
 using MTGDraft.DTOs.Draft;
 using MTGDraft.DTOs.Pack;
 using MTGDraft.DTOs.PackCard;
-using MTGDraft.Models;
 
 namespace MTGDraft.Routes;
 
@@ -27,7 +27,40 @@ public static class DraftSessionRoutes
         });
 
         // get a specific draft session
-        
+        group.MapGet("/{id}", async (int id, DraftContext context) =>
+        {
+            var session = await context.DraftSessions
+                .Where(draft => draft.Id == id)
+                .Select(draft => new DraftSessionDTO(
+                    draft.Id,
+                    draft.SetCode,
+                    draft.CreatedAt,
+                    draft.Packs.Select(pack => new PackDTO(
+                        pack.Id,
+                        pack.PackNumber,
+                        pack.OriginalSeat,
+                        pack.Cards.Select(packcard => new PackCardDTO(
+                            packcard.Id,
+                            packcard.IsPicked,
+                            packcard.IsFoil,
+                            new CardDTO(
+                                packcard.Card.Id,
+                                packcard.Card.Name,
+                                packcard.Card.Rarity,
+                                packcard.Card.SetCode,  
+                                packcard.Card.CardNumber,
+                                packcard.Card.SetId
+                            )
+                        )).ToList()
+                    )).ToList()
+                )).FirstOrDefaultAsync();
+
+            if (session is null) {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(session);
+        });
 
         // create a draft session
         group.MapPost("/", async (AddDraftSessionDTO dto, DraftSessionService service) => {
@@ -48,5 +81,18 @@ public static class DraftSessionRoutes
             }
         });
 
+        // delete a draft session
+        group.MapDelete("/{id}", async (int id, DraftContext context) => {
+            var session = await context.DraftSessions.FindAsync(id);
+
+            if (session is null) {
+                return Results.NotFound();
+            }
+
+            context.DraftSessions.Remove(session);
+            await context.SaveChangesAsync();
+
+            return Results.NoContent();
+        });
     }
 }
