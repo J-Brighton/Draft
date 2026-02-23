@@ -21,4 +21,4 @@ DELETE http://localhost:5189/DraftSession/4
 
 ###
 
-GET http://localhost:5189/Packs/10
+GET http://localhost:5189/Packs/1

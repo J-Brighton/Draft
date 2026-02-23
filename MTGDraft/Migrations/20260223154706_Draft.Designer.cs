@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MTGDraft.Migrations
 {
     [DbContext(typeof(DraftContext))]
-    [Migration("20260223135559_Draft")]
+    [Migration("20260223154706_Draft")]
     partial class Draft
     {
         /// <inheritdoc />

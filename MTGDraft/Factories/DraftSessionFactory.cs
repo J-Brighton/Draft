@@ -83,9 +83,13 @@ public static class DraftSessionFactory
 
         // add a rare or mythic
         var rareOrMythicCards = set.Cards.Where(card => card.Rarity == "R" || card.Rarity == "M").ToList();
-        var rareOrMythicCard = rareOrMythicCards[random.Next(rareOrMythicCards.Count)];
-        packCards.Add(rareOrMythicCard);
+        var mythicCards = set.Cards.Where(card => card.Rarity == "M").ToList();
 
+        var isMythic = random.NextDouble() < 0.125; // 1 in 8 packs have a mythic instead of a rare
+        var rareOrMythicCard = isMythic && mythicCards.Count > 0
+            ? mythicCards[random.Next(mythicCards.Count)]
+            : rareOrMythicCards[random.Next(rareOrMythicCards.Count)];
+        packCards.Add(rareOrMythicCard);
 
         // Basic lands are the last 5 cards in the set by CardNumber
         var maxCardNumber = set.Cards.Max(c => c.CardNumber);
