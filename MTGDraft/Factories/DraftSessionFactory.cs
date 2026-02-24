@@ -47,19 +47,17 @@ public static class DraftSessionFactory
 
     private static List<Card> GeneratePack(Set set)
     {
-        // slot 1-6 common
-        // slot 7 common or special guest card
-        // slot 8-10 uncommon
-        // slot 11 non-foil wildcard
-        // slot 14 foil wildcard
-        // slot 12 rare or mythic
-        // slot 13 basic land
-
+        // https://magic.wizards.com/en/news/feature/collecting-lorwyn-eclipsed
+        // this section is still not fully correct.
+        // does not use special guests or alternate arts, and the wildcard distribution is not right.
+        // random selection yields 32, 36, 24, 8 for C, U, R, M respectively instead of 18, 58, 19, 2 
+        
         var random = new Random();
         var packCards = new List<Card>();
+        var maxCardNumber = set.Cards.Max(c => c.CardNumber);
 
-        // slot 1-7 common (ignore special guests)
-        var commonCards = set.Cards.Where(card => card.Rarity == "C").ToList();
+        // slot 1-7 common (ignore special guests & basic lands)
+        var commonCards = set.Cards.Where(card => card.Rarity == "C" && card.CardNumber < maxCardNumber - 5).ToList();
         for (int i = 0 ; i < 7 ; i++)
         {
             var commonCard = commonCards[random.Next(commonCards.Count)];
@@ -74,7 +72,7 @@ public static class DraftSessionFactory
             packCards.Add(uncommonCard);
         }
 
-        // one wildcard and another foil wildcard 
+        // one wildcard and another foil wildcard  (not weighted 18, 58, 19, 2)
         var wildCards = set.Cards.ToList();
         for (int i = 0 ; i < 2 ; i++) {
             var wildCard = wildCards[random.Next(wildCards.Count)];
@@ -92,7 +90,6 @@ public static class DraftSessionFactory
         packCards.Add(rareOrMythicCard);
 
         // Basic lands are the last 5 cards in the set by CardNumber
-        var maxCardNumber = set.Cards.Max(c => c.CardNumber);
         var landCards = set.Cards.Where(card => card.CardNumber > maxCardNumber - 5).ToList();
         var landCard = landCards[random.Next(landCards.Count)];
 

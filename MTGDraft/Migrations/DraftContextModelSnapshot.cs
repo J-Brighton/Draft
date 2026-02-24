@@ -48,6 +48,53 @@ namespace MTGDraft.Migrations
                     b.ToTable("Cards");
                 });
 
+            modelBuilder.Entity("MTGDraft.Models.Deck", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("Decks");
+                });
+
+            modelBuilder.Entity("MTGDraft.Models.DeckCard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DeckId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsSideboard")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.HasIndex("DeckId");
+
+                    b.ToTable("DeckCards");
+                });
+
             modelBuilder.Entity("MTGDraft.Models.DraftSession", b =>
                 {
                     b.Property<int>("Id")
@@ -118,6 +165,21 @@ namespace MTGDraft.Migrations
                     b.ToTable("PackCards");
                 });
 
+            modelBuilder.Entity("MTGDraft.Models.Player", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Players");
+                });
+
             modelBuilder.Entity("MTGDraft.Models.Set", b =>
                 {
                     b.Property<int>("Id")
@@ -146,6 +208,34 @@ namespace MTGDraft.Migrations
                         .IsRequired();
 
                     b.Navigation("Set");
+                });
+
+            modelBuilder.Entity("MTGDraft.Models.Deck", b =>
+                {
+                    b.HasOne("MTGDraft.Models.Player", "Player")
+                        .WithMany("Decks")
+                        .HasForeignKey("PlayerId");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("MTGDraft.Models.DeckCard", b =>
+                {
+                    b.HasOne("MTGDraft.Models.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MTGDraft.Models.Deck", "Deck")
+                        .WithMany("DeckCards")
+                        .HasForeignKey("DeckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+
+                    b.Navigation("Deck");
                 });
 
             modelBuilder.Entity("MTGDraft.Models.Pack", b =>
@@ -178,6 +268,11 @@ namespace MTGDraft.Migrations
                     b.Navigation("Pack");
                 });
 
+            modelBuilder.Entity("MTGDraft.Models.Deck", b =>
+                {
+                    b.Navigation("DeckCards");
+                });
+
             modelBuilder.Entity("MTGDraft.Models.DraftSession", b =>
                 {
                     b.Navigation("Packs");
@@ -186,6 +281,11 @@ namespace MTGDraft.Migrations
             modelBuilder.Entity("MTGDraft.Models.Pack", b =>
                 {
                     b.Navigation("Cards");
+                });
+
+            modelBuilder.Entity("MTGDraft.Models.Player", b =>
+                {
+                    b.Navigation("Decks");
                 });
 
             modelBuilder.Entity("MTGDraft.Models.Set", b =>

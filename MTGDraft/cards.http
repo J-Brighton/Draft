@@ -22,3 +22,18 @@ DELETE http://localhost:5189/DraftSession/4
 ###
 
 GET http://localhost:5189/Packs/1
+###
+GET http://localhost:5189/Packs/2
+###
+GET http://localhost:5189/Packs/3
+###
+GET http://localhost:5189/Packs/4
+###
+GET http://localhost:5189/Packs/5
+###
+GET http://localhost:5189/Packs/6
+###
+GET http://localhost:5189/Packs/7
+###
+GET http://localhost:5189/Packs/25
+

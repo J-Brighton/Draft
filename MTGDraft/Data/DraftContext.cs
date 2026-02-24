@@ -10,4 +10,7 @@ public class DraftContext(DbContextOptions<DraftContext> options) : DbContext(op
     public DbSet<DraftSession> DraftSessions => Set<DraftSession>();
     public DbSet<PackCard> PackCards => Set<PackCard>();
     public DbSet<Set> Sets => Set<Set>();
+    public DbSet<Player> Players => Set<Player>();
+    public DbSet<Deck> Decks => Set<Deck>();
+    public DbSet<DeckCard> DeckCards => Set<DeckCard>();
 }
