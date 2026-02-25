@@ -4,6 +4,7 @@ using MTGDraft.DTOs.Card;
 using MTGDraft.DTOs.Draft;
 using MTGDraft.DTOs.Pack;
 using MTGDraft.DTOs.PackCard;
+using MTGDraft.DTOs.Player;
 
 namespace MTGDraft.Routes;
 
@@ -20,6 +21,13 @@ public static class DraftSessionRoutes
                 .Select(draft => new DraftSessionSummaryDTO(
                     draft.Id,
                     draft.SetCode,
+                    draft.PlayerCount,
+                    draft.DraftPlayers.Select(p => new PlayerSummaryDTO(
+                        p.Id,
+                        p.Name,
+                        p.IsBot   
+                    )).ToList(),
+                    draft.DraftState,
                     draft.CreatedAt
                 )).ToListAsync();
             
@@ -34,6 +42,13 @@ public static class DraftSessionRoutes
                 .Select(draft => new DraftSessionDTO(
                     draft.Id,
                     draft.SetCode,
+                    draft.PlayerCount,
+                    draft.DraftPlayers.Select(p => new PlayerSummaryDTO(
+                        p.Id,
+                        p.Name,
+                        p.IsBot
+                    )).ToList(),
+                    draft.DraftState,
                     draft.CreatedAt,
                     draft.Packs.Select(pack => new PackDTO(
                         pack.Id,
@@ -42,6 +57,7 @@ public static class DraftSessionRoutes
                         pack.Cards.Select(packcard => new PackCardDTO(
                             packcard.Id,
                             packcard.IsPicked,
+                            packcard.PickedByPlayerId,
                             packcard.IsFoil,
                             new CardDTO(
                                 packcard.Card.Id,
@@ -70,6 +86,13 @@ public static class DraftSessionRoutes
                 var resultDto = new DraftSessionSummaryDTO(
                     session.Id,
                     session.SetCode,
+                    session.PlayerCount,
+                    session.DraftPlayers.Select(p => new PlayerSummaryDTO(
+                        p.Id,
+                        p.Name,
+                        p.IsBot
+                    )).ToList(),
+                    session.DraftState,
                     session.CreatedAt
                 );
 
@@ -89,10 +112,56 @@ public static class DraftSessionRoutes
                 return Results.NotFound();
             }
 
+            // ATTEMPTING TO DECOUPLE PLAYERS FROM DRAFT SESSION BEFORE DELETING
+            var playersInSession = await context.Players.Where(p => p.DraftSessionId == id).ToListAsync();
+
+            // ORPHAN THE PLAYER BEFORE DELETING DRAFT
+            foreach (var player in playersInSession) {
+                player.DraftSessionId = null;
+            }
+
             context.DraftSessions.Remove(session);
             await context.SaveChangesAsync();
 
             return Results.NoContent();
+        });
+
+        // update a draft session (draft state)
+        group.MapPatch("/{id}", async (int id, UpdateDraftSessionDTO dto, DraftContext context) =>
+        {
+            var session = await context.DraftSessions.FindAsync(id);
+
+            if (session is null) {
+                return Results.NotFound();
+            }
+
+            session.DraftState = dto.DraftState;
+            await context.SaveChangesAsync();
+
+            return Results.Ok(new DraftSessionSummaryDTO(
+                session.Id,
+                session.SetCode,
+                session.PlayerCount,
+                session.DraftPlayers.Select(p => new PlayerSummaryDTO(
+                    p.Id,
+                    p.Name,
+                    p.IsBot
+                )).ToList(),
+                session.DraftState,
+                session.CreatedAt
+            ));
+        });  
+    
+        // join a draft session
+        group.MapPost("/{id}/Join/{playerId}", async (int id, int playerId, DraftSessionService service) =>
+        {
+            try {
+                await service.JoinDraftSession(id, playerId);
+                return Results.Ok();
+            }
+            catch (ArgumentException ex) {
+                return Results.BadRequest(ex.Message);
+            }
         });
     }
 }

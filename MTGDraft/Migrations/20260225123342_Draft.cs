@@ -18,24 +18,13 @@ namespace MTGDraft.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SetCode = table.Column<string>(type: "TEXT", nullable: false),
+                    PlayerCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    DraftState = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DraftSessions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Players",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Players", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,21 +63,22 @@ namespace MTGDraft.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Decks",
+                name: "Players",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    PlayerId = table.Column<int>(type: "INTEGER", nullable: true)
+                    IsBot = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DraftSessionId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Decks", x => x.Id);
+                    table.PrimaryKey("PK_Players", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Decks_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
+                        name: "FK_Players_DraftSessions_DraftSessionId",
+                        column: x => x.DraftSessionId,
+                        principalTable: "DraftSessions",
                         principalColumn: "Id");
                 });
 
@@ -116,29 +106,21 @@ namespace MTGDraft.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DeckCards",
+                name: "Decks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    DeckId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CardId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsSideboard = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    PlayerId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeckCards", x => x.Id);
+                    table.PrimaryKey("PK_Decks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DeckCards_Cards_CardId",
-                        column: x => x.CardId,
-                        principalTable: "Cards",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DeckCards_Decks_DeckId",
-                        column: x => x.DeckId,
-                        principalTable: "Decks",
+                        name: "FK_Decks_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -168,6 +150,34 @@ namespace MTGDraft.Migrations
                         name: "FK_PackCards_Packs_PackId",
                         column: x => x.PackId,
                         principalTable: "Packs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DeckCards",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DeckId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CardId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    IsSideboard = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeckCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DeckCards_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeckCards_Decks_DeckId",
+                        column: x => x.DeckId,
+                        principalTable: "Decks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -205,6 +215,11 @@ namespace MTGDraft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Packs_DraftSessionId",
                 table: "Packs",
+                column: "DraftSessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_DraftSessionId",
+                table: "Players",
                 column: "DraftSessionId");
         }
 

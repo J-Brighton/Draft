@@ -10,9 +10,10 @@ builder.Services.AddScoped<DraftSessionService>();
 
 var app = builder.Build();
 
-app.MapPackCardRoutes();
 app.MapDraftSessionRoutes();
 app.MapPackRoutes();
+app.MapPlayerRoutes();
+app.MapDeckRoutes();
 
 using (var scope = app.Services.CreateScope())
 {

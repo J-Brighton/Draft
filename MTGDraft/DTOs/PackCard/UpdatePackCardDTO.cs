@@ -3,5 +3,6 @@ using System.ComponentModel.DataAnnotations;
 namespace MTGDraft.DTOs.PackCard;
 
 public record class UpdatePackCardDTO(
-    [Required] bool IsPicked
+    [Required] bool IsPicked,
+    [Required] int? PickedByPlayerId
 );

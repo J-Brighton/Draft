@@ -9,6 +9,8 @@ public static class DraftSessionFactory
         var session = new DraftSession
         {
             SetCode = set.Code,
+            PlayerCount = playerCount,
+            DraftState = "NotStarted",
             CreatedAt = DateTime.Now,
             Packs = GeneratePacks(set, playerCount)
         };

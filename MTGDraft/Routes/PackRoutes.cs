@@ -12,6 +12,7 @@ public static class PackRoutes
     {
         var group = app.MapGroup("/Packs");
 
+        // get the contents of a pack
         group.MapGet("/{id}", async (int id, DraftContext context) =>
         {
             var pack = await context.Packs
@@ -23,6 +24,7 @@ public static class PackRoutes
                     pack.Cards.Select(packcard => new PackCardDTO(
                         packcard.Id,
                         packcard.IsPicked,
+                        packcard.PickedByPlayerId,
                         packcard.IsFoil,
                         new CardDTO(
                             packcard.Card.Id,
@@ -40,6 +42,50 @@ public static class PackRoutes
             }
 
             return Results.Ok(pack);
+        });
+
+        // toggle ispicked in a specific card within a pack
+        group.MapPost("/{packId}/{id}", async (int packId, int id, UpdatePackCardDTO updateDTO, DraftContext context) =>
+        {
+            var packCard = await context.PackCards.FindAsync(id);
+
+            if (packCard is null) {
+                return Results.NotFound();
+            }
+
+            packCard.IsPicked = updateDTO.IsPicked;
+            packCard.PickedByPlayerId = updateDTO.PickedByPlayerId;
+
+            await context.SaveChangesAsync();
+
+            return Results.Ok();
+        });
+
+        // get a specific card within a pack
+        group.MapGet("/{packId}/{id}", async (int packId, int id, DraftContext context) =>
+        {
+            var packCard = await context.PackCards
+                .Where(pc => pc.Id == id && pc.PackId == packId)
+                .Select(packcard => new PackCardDTO(
+                    packcard.Id,
+                    packcard.IsPicked,
+                    packcard.PickedByPlayerId,
+                    packcard.IsFoil,
+                    new CardDTO(
+                        packcard.Card.Id,
+                        packcard.Card.Name,
+                        packcard.Card.Rarity,
+                        packcard.Card.SetCode,  
+                        packcard.Card.CardNumber,
+                        packcard.Card.SetId
+                    )
+                )).SingleOrDefaultAsync();
+
+            if (packCard is null) {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(packCard);
         });
 
     }

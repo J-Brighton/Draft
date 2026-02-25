@@ -58,7 +58,7 @@ namespace MTGDraft.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("PlayerId")
+                    b.Property<int>("PlayerId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -83,8 +83,9 @@ namespace MTGDraft.Migrations
                     b.Property<bool>("IsSideboard")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -103,6 +104,13 @@ namespace MTGDraft.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("DraftState")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PlayerCount")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SetCode")
                         .IsRequired()
@@ -171,11 +179,19 @@ namespace MTGDraft.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("DraftSessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsBot")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DraftSessionId");
 
                     b.ToTable("Players");
                 });
@@ -214,7 +230,9 @@ namespace MTGDraft.Migrations
                 {
                     b.HasOne("MTGDraft.Models.Player", "Player")
                         .WithMany("Decks")
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Player");
                 });
@@ -268,6 +286,15 @@ namespace MTGDraft.Migrations
                     b.Navigation("Pack");
                 });
 
+            modelBuilder.Entity("MTGDraft.Models.Player", b =>
+                {
+                    b.HasOne("MTGDraft.Models.DraftSession", "DraftSession")
+                        .WithMany("DraftPlayers")
+                        .HasForeignKey("DraftSessionId");
+
+                    b.Navigation("DraftSession");
+                });
+
             modelBuilder.Entity("MTGDraft.Models.Deck", b =>
                 {
                     b.Navigation("DeckCards");
@@ -275,6 +302,8 @@ namespace MTGDraft.Migrations
 
             modelBuilder.Entity("MTGDraft.Models.DraftSession", b =>
                 {
+                    b.Navigation("DraftPlayers");
+
                     b.Navigation("Packs");
                 });
 
