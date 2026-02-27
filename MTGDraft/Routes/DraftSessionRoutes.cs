@@ -125,32 +125,6 @@ public static class DraftSessionRoutes
 
             return Results.NoContent();
         });
-
-        // update a draft session (draft state)
-        group.MapPatch("/{id}", async (int id, UpdateDraftSessionDTO dto, DraftContext context) =>
-        {
-            var session = await context.DraftSessions.FindAsync(id);
-
-            if (session is null) {
-                return Results.NotFound();
-            }
-
-            session.DraftState = dto.DraftState;
-            await context.SaveChangesAsync();
-
-            return Results.Ok(new DraftSessionSummaryDTO(
-                session.Id,
-                session.SetCode,
-                session.PlayerCount,
-                session.DraftPlayers.Select(p => new PlayerSummaryDTO(
-                    p.Id,
-                    p.Name,
-                    p.IsBot
-                )).ToList(),
-                session.DraftState,
-                session.CreatedAt
-            ));
-        });  
     
         // join a draft session
         group.MapPost("/{id}/Join/{playerId}", async (int id, int playerId, DraftSessionService service) =>
@@ -163,5 +137,24 @@ public static class DraftSessionRoutes
                 return Results.BadRequest(ex.Message);
             }
         });
+
+        // start a draft session
+        group.MapPost("/{id}/Start", async (int id, DraftSessionService service) =>
+        {
+            try
+            {
+                await service.StartDraftSession(id);
+                return Results.Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+        });
+
     }
 }

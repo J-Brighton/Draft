@@ -12,13 +12,13 @@ public static class DraftSessionFactory
             PlayerCount = playerCount,
             DraftState = "NotStarted",
             CreatedAt = DateTime.Now,
-            Packs = GeneratePacks(set, playerCount)
+            Packs = [] // make packs empty initially, instead generate when draft starts
         };
 
         return session;
     }
 
-    private static List<Pack> GeneratePacks(Set set, int playerCount)
+    public static List<Pack> GeneratePacks(Set set, int playerCount)
     {
         var packs = new List<Pack>();
 
