@@ -8,6 +8,8 @@ public record class DraftSessionDTO(
     int Id,
     string SetCode,
     int PlayerCount,
+    int CurrentPickIndex,
+    int CurrentPackNumber,
     List<PlayerSummaryDTO> Players,
     string DraftState,
     DateTime CreatedAt,

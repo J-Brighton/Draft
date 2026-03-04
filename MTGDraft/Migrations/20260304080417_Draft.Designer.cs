@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MTGDraft.Migrations
 {
     [DbContext(typeof(DraftContext))]
-    [Migration("20260225123342_Draft")]
+    [Migration("20260304080417_Draft")]
     partial class Draft
     {
         /// <inheritdoc />
@@ -108,6 +108,15 @@ namespace MTGDraft.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CurrentPackNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CurrentPickIndex")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("DraftDirectionClockwise")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("DraftState")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -128,6 +137,9 @@ namespace MTGDraft.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CurrentSeat")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DraftSessionId")
@@ -183,6 +195,12 @@ namespace MTGDraft.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("DraftSessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DraftSessionSeat")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HasPickedThisRound")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsBot")

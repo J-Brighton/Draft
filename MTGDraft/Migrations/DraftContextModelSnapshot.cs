@@ -105,6 +105,15 @@ namespace MTGDraft.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CurrentPackNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CurrentPickIndex")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("DraftDirectionClockwise")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("DraftState")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -125,6 +134,9 @@ namespace MTGDraft.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CurrentSeat")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DraftSessionId")
@@ -180,6 +192,12 @@ namespace MTGDraft.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("DraftSessionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DraftSessionSeat")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HasPickedThisRound")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsBot")

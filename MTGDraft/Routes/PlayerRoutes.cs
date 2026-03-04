@@ -43,7 +43,9 @@ public static class PlayerRoutes
                 .Select(p => new PlayerSummaryDTO(
                     p.Id, 
                     p.Name, 
-                    p.IsBot
+                    p.IsBot,
+                    p.DraftSessionId,
+                    p.DraftSessionSeat
                 )).ToListAsync();
             return Results.Ok(players);
         });
@@ -59,6 +61,7 @@ public static class PlayerRoutes
                         player.Name, 
                         player.IsBot,
                         player.DraftSessionId,
+                        player.DraftSessionSeat,
                         player.Decks.Select(
                             d => new DeckSummaryDTO(d.Id, d.Name)
                         ).ToList())) 

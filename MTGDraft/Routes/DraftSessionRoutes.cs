@@ -14,70 +14,6 @@ public static class DraftSessionRoutes
     {
         var group = app.MapGroup("/DraftSession");
 
-        // get all the draft sessions
-        group.MapGet("/", async (DraftContext context) =>
-        {
-            var sessions = await context.DraftSessions
-                .Select(draft => new DraftSessionSummaryDTO(
-                    draft.Id,
-                    draft.SetCode,
-                    draft.PlayerCount,
-                    draft.DraftPlayers.Select(p => new PlayerSummaryDTO(
-                        p.Id,
-                        p.Name,
-                        p.IsBot   
-                    )).ToList(),
-                    draft.DraftState,
-                    draft.CreatedAt
-                )).ToListAsync();
-            
-            return Results.Ok(sessions);
-        });
-
-        // get a specific draft session
-        group.MapGet("/{id}", async (int id, DraftContext context) =>
-        {
-            var session = await context.DraftSessions
-                .Where(draft => draft.Id == id)
-                .Select(draft => new DraftSessionDTO(
-                    draft.Id,
-                    draft.SetCode,
-                    draft.PlayerCount,
-                    draft.DraftPlayers.Select(p => new PlayerSummaryDTO(
-                        p.Id,
-                        p.Name,
-                        p.IsBot
-                    )).ToList(),
-                    draft.DraftState,
-                    draft.CreatedAt,
-                    draft.Packs.Select(pack => new PackDTO(
-                        pack.Id,
-                        pack.PackNumber,
-                        pack.OriginalSeat,
-                        pack.Cards.Select(packcard => new PackCardDTO(
-                            packcard.Id,
-                            packcard.IsPicked,
-                            packcard.PickedByPlayerId,
-                            packcard.IsFoil,
-                            new CardDTO(
-                                packcard.Card.Id,
-                                packcard.Card.Name,
-                                packcard.Card.Rarity,
-                                packcard.Card.SetCode,  
-                                packcard.Card.CardNumber,
-                                packcard.Card.SetId
-                            )
-                        )).ToList()
-                    )).ToList()
-                )).FirstOrDefaultAsync();
-
-            if (session is null) {
-                return Results.NotFound();
-            }
-
-            return Results.Ok(session);
-        });
-
         // create a draft session
         group.MapPost("/", async (AddDraftSessionDTO dto, DraftSessionService service) => {
             try {
@@ -87,10 +23,15 @@ public static class DraftSessionRoutes
                     session.Id,
                     session.SetCode,
                     session.PlayerCount,
-                    session.DraftPlayers.Select(p => new PlayerSummaryDTO(
+                    session.CurrentPickIndex,
+                    session.CurrentPackNumber,
+                    session.DraftPlayers.Select(p => new PlayerSessionSummaryDTO(
                         p.Id,
                         p.Name,
-                        p.IsBot
+                        p.IsBot,
+                        p.DraftSessionId,
+                        p.DraftSessionSeat,
+                        p.HasPickedThisRound
                     )).ToList(),
                     session.DraftState,
                     session.CreatedAt
@@ -143,8 +84,26 @@ public static class DraftSessionRoutes
         {
             try
             {
-                await service.StartDraftSession(id);
-                return Results.Ok();
+                var session = await service.StartDraftSession(id);
+                var sessionDTO = new DraftSessionSummaryDTO(
+                    Id: session.Id,
+                    SetCode: session.SetCode,
+                    PlayerCount: session.PlayerCount,
+                    CurrentPickIndex: session.CurrentPickIndex,
+                    CurrentPackNumber: session.CurrentPackNumber,
+                    Players: session.DraftPlayers
+                        .Select(p => new PlayerSessionSummaryDTO(
+                            Id: p.Id, 
+                            Name: p.Name, 
+                            IsBot: p.IsBot,
+                            DraftSessionId: p.DraftSessionId,
+                            DraftSessionSeat: p.DraftSessionSeat,
+                            HasPicked: p.HasPickedThisRound
+                        )).ToList(),
+                    DraftState: session.DraftState,
+                    CreatedAt: session.CreatedAt
+                );
+                return Results.Ok(sessionDTO);
             }
             catch (ArgumentException ex)
             {

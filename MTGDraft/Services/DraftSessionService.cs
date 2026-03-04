@@ -22,8 +22,6 @@ public class DraftSessionService
 
         if (set == null) throw new ArgumentException("invalid set code");
         
-        Console.WriteLine($"Set loaded: {set.Code}, Cards count: {set.Cards.Count}");
-
         // use the factory to create the draft session & packs
         var session = DraftSessionFactory.Create(set, playerCount);
 
@@ -47,6 +45,8 @@ public class DraftSessionService
         var player = await _context.Players.FindAsync(playerId);
         if (player == null) throw new ArgumentException("invalid player id");
     
+        if (player.DraftSessionId != null) throw new ArgumentException("player already in draft session");
+        
         session.AddPlayer(player);
         await _context.SaveChangesAsync();
 
@@ -62,8 +62,8 @@ public class DraftSessionService
         // check the session is real
         if (session == null) throw new ArgumentException("invalid session id"); 
 
-        // find the set from code
-        var draftSet = await _context.Sets.FirstOrDefaultAsync(s => s.Code == session.SetCode);
+        // find the set from code -> include cards for pack generation in StartDraft function
+        var draftSet = await _context.Sets.Include(s => s.Cards).FirstOrDefaultAsync(s => s.Code == session.SetCode);
         if (draftSet == null) throw new ArgumentException("invalid set code");
         
         // start the draft

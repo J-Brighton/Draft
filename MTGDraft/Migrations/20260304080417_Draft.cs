@@ -20,6 +20,9 @@ namespace MTGDraft.Migrations
                     SetCode = table.Column<string>(type: "TEXT", nullable: false),
                     PlayerCount = table.Column<int>(type: "INTEGER", nullable: false),
                     DraftState = table.Column<string>(type: "TEXT", nullable: false),
+                    CurrentPackNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentPickIndex = table.Column<int>(type: "INTEGER", nullable: false),
+                    DraftDirectionClockwise = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -49,7 +52,8 @@ namespace MTGDraft.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     DraftSessionId = table.Column<int>(type: "INTEGER", nullable: false),
                     PackNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    OriginalSeat = table.Column<int>(type: "INTEGER", nullable: false)
+                    OriginalSeat = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentSeat = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,7 +74,9 @@ namespace MTGDraft.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     IsBot = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DraftSessionId = table.Column<int>(type: "INTEGER", nullable: true)
+                    DraftSessionId = table.Column<int>(type: "INTEGER", nullable: true),
+                    DraftSessionSeat = table.Column<int>(type: "INTEGER", nullable: true),
+                    HasPickedThisRound = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

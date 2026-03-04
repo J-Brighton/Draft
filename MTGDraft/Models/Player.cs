@@ -9,6 +9,8 @@ public class Player
     public bool IsBot { get; set; }
 
     public int? DraftSessionId { get; set; }
+    public int? DraftSessionSeat { get; set; }
+    public bool HasPickedThisRound { get; set; }
     public DraftSession? DraftSession { get; set; }
 
     public List<Deck> Decks { get; set; } = new List<Deck>();

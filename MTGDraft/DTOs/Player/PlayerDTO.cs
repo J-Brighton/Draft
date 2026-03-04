@@ -7,5 +7,6 @@ public record class PlayerDTO(
     string Name,
     bool IsBot,
     int? DraftSessionId,
+    int? DraftSessionSeat,
     List<DeckSummaryDTO> Decks
 );

@@ -7,10 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddValidation();
 builder.Services.AddDbContext<DraftContext>(options => options.UseSqlite("Data Source=Pack.db"));
 builder.Services.AddScoped<DraftSessionService>();
+builder.Services.AddScoped<DraftEngineService>();
 
 var app = builder.Build();
 
 app.MapDraftSessionRoutes();
+app.MapDraftSessionInfoRoutes();
+app.MapDraftSessionGameRoutes();
+
 app.MapPackRoutes();
 app.MapPlayerRoutes();
 app.MapDeckRoutes();

@@ -20,17 +20,20 @@ public static class DraftSessionFactory
 
     public static List<Pack> GeneratePacks(Set set, int playerCount)
     {
+        Console.WriteLine($"Creating pack - Set: {set.Code}, Cards in set: {set.Cards.Count}");
         var packs = new List<Pack>();
 
         for (int seat = 0 ; seat < playerCount ; seat++)
         {
             for (int packNum = 1 ; packNum <= 3 ; packNum++)
             {
+                Console.WriteLine("GENERATE PACK");
                 var cards = GeneratePack(set);
                 packs.Add(new Pack
                 {
                     PackNumber = packNum,
-                    OriginalSeat = seat,
+                    OriginalSeat = seat + 1,    // these are broken
+                    CurrentSeat = seat + 1,     // these are broken
                     Cards = cards.Select((card, index) => new PackCard {
                         CardId = card.Id,
                         IsPicked = false,

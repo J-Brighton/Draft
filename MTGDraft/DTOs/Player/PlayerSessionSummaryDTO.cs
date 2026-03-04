@@ -1,9 +1,10 @@
 namespace MTGDraft.DTOs.Player;
 
-public record class PlayerSummaryDTO(
+public record class PlayerSessionSummaryDTO(
     int Id,
     string Name,
     bool IsBot,
     int? DraftSessionId,
-    int? DraftSessionSeat
+    int? DraftSessionSeat,
+    bool HasPicked
 );

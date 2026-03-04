@@ -1,25 +1,28 @@
 TODO
-implement routes for creating, managing, and deleting players and decks.
-
-start on the draft game loop
-- status and player count in draftsession
-- join route for players to join a draft session
-- start route to start the draft session (move pack generation to here)
-- modify get draftsession route to include players and status
+double check bot choices are working as intended
+add cards to a player deck endpoint
 
 ###
-GET http://localhost:5189/DraftSession/2
+GET http://localhost:5189/DraftSession/1
 ###
 GET http://localhost:5189/Players/
+###
+GET http://localhost:5189/DraftSession/1/Player/8
+###
+POST http://localhost:5189/DraftSession/1/Advance
 ###
 POST http://localhost:5189/Players/
 Content-Type: application/json
 
 {
-    "name": "Player1",
-    "IsBot": false,
+    "name": "Bot",
+    "IsBot": true,
     "Decks": []
 }
+###
+POST http://localhost:5189/DraftSession/1/Start
+###
+DELETE http://localhost:5189/DraftSession/1
 ###
 POST http://localhost:5189/DraftSession/
 Content-Type: application/json
@@ -30,11 +33,43 @@ Content-Type: application/json
     "createdAt": "2026-02-19T00:00:00Z"
 }
 ###
+POST http://localhost:5189/DraftSession/1/Pick
+Content-Type: application/json
+
+{
+    "playerId": 1,
+    "packCardId": 1
+}
+###
+POST http://localhost:5189/DraftSession/1/Pick
+Content-Type: application/json
+
+{
+    "playerId": 1,
+    "packCardId": 1
+}
+###
 GET http://localhost:5189/DraftSession/1
 ###
 DELETE http://localhost:5189/DraftSession/1
 ###
-POST http://localhost:5189/DraftSession/2/Join/3
+POST http://localhost:5189/DraftSession/1/Join/1
+###
+POST http://localhost:5189/DraftSession/1/Join/2
+###
+POST http://localhost:5189/DraftSession/1/Join/3
+###
+POST http://localhost:5189/DraftSession/1/Join/4
+###
+POST http://localhost:5189/DraftSession/1/Join/5
+###
+POST http://localhost:5189/DraftSession/1/Join/6
+###
+POST http://localhost:5189/DraftSession/1/Join/7
+###
+POST http://localhost:5189/DraftSession/1/Join/8
+###
+POST http://localhost:5189/DraftSession/1/Join/9
 ###
 PATCH http://localhost:5189/DraftSession/2
 Content-Type: application/json
@@ -42,45 +77,3 @@ Content-Type: application/json
 {
     "DraftState": "InProgress"
 }
-###
-GET http://localhost:5189/Players/1
-###
-DELETE http://localhost:5189/Players/1
-###
-GET http://localhost:5189/Players/1/Decks/
-###
-GET http://localhost:5189/Players/1/Decks/1
-###
-POST http://localhost:5189/Players/1/Decks
-Content-Type: application/json
-
-{
-    "name": "Draft Deck 3",
-    "cards": [
-        {
-            "cardId": 243,
-            "isSideboard": false
-        },
-        {
-            "cardId": 144,
-            "isSideboard": false
-        }
-    ]
-}
-###
-GET http://localhost:5189/Players/1/Decks/4
-###
-DELETE http://localhost:5189/Players/1/Decks/2
-###
-GET http://localhost:5189/Packs/1
-###
-GET http://localhost:5189/Packs/1/1
-###
-POST http://localhost:5189/Packs/1/1
-Content-Type: application/json
-
-{
-    "IsPicked": true,
-    "PickedByPlayerId": 1
-}
-###

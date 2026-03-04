@@ -6,6 +6,7 @@ public class Pack
     public int DraftSessionId { get; set; }
     public int PackNumber { get; set; }
     public int OriginalSeat { get; set; }
+    public int CurrentSeat { get; set; }
 
     public DraftSession DraftSession { get; set; } = null!;
 
