@@ -6,6 +6,7 @@ using MTGDraft.DTOs.Pack;
 using MTGDraft.DTOs.PackCard;
 using MTGDraft.DTOs.Card;
 using MTGDraft.Models;
+using System.Reflection.Emit;
 
 namespace MTGDraft.Routes;
 
@@ -131,6 +132,7 @@ public static class DraftSessionInfoRoutes
             var currentPack = await context.Packs
                 .Where(pack => pack.DraftSessionId == sessionId && pack.CurrentSeat == player.DraftSessionSeat && pack.PackNumber == session.CurrentPackNumber)
                 .SelectMany(pack => pack.Cards)
+                .Where(packcard => !packcard.IsPicked)
                 .Select(packcard => new PackCardDTO(
                     packcard.Id,
                     packcard.IsPicked,
@@ -146,6 +148,24 @@ public static class DraftSessionInfoRoutes
                     )
                 )).ToListAsync();
 
+            // get user cards
+            var draftedCards = await context.PackCards
+                .Where(pc => pc.PickedByPlayerId == player.Id)
+                .Select(pc => new PackCardDTO(
+                    pc.Id,
+                    pc.IsPicked,
+                    pc.PickedByPlayerId,
+                    pc.IsFoil,
+                    new CardDTO(
+                        pc.Card.Id,
+                        pc.Card.Name,
+                        pc.Card.Rarity,
+                        pc.Card.SetCode,
+                        pc.Card.CardNumber,
+                        pc.Card.SetId
+                    )
+                )).ToListAsync();
+
             // map to DTO
             var sessionViewDTO = new DraftSessionViewDTO(
                 Id: session.Id,
@@ -157,6 +177,7 @@ public static class DraftSessionInfoRoutes
                 HasPicked: player.HasPicked,
                 DraftState: session.DraftState,
                 CurrentPack: currentPack,
+                DraftedCards: draftedCards,
                 CreatedAt: session.CreatedAt
             );
 

@@ -69,6 +69,9 @@ public static class DraftSessionFactory
             packCards.Add(commonCard);
         }
 
+        // slot 7, 1 in 55 is special guest, otherwise is a common
+        // var isSpecialGuest = random.NextDouble() < 0.018;
+
         // slot 8-10 uncommon
         var uncommonCards = set.Cards.Where(card => card.Rarity == "U").ToList();
         for (int i = 0 ; i < 3 ; i++)
@@ -77,7 +80,7 @@ public static class DraftSessionFactory
             packCards.Add(uncommonCard);
         }
 
-        // one wildcard and another foil wildcard  (not weighted 18, 58, 19, 2)
+        // one wildcard and another foil wildcard  (not weighted 18c, 58u, 19r, 2m)
         var wildCards = set.Cards.ToList();
         for (int i = 0 ; i < 2 ; i++) {
             var wildCard = wildCards[random.Next(wildCards.Count)];

@@ -13,5 +13,6 @@ public record class DraftSessionViewDTO(
     bool HasPicked,
     string DraftState,
     List<PackCardDTO> CurrentPack,
+    List<PackCardDTO> DraftedCards,
     DateTime CreatedAt
 );

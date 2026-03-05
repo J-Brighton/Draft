@@ -74,7 +74,7 @@ public class DraftSession
         if (player.HasPickedThisRound) throw new InvalidOperationException("player has already picked this round");
 
         // check if it is players pack
-        var playerPack = Packs.FirstOrDefault(p => p.CurrentSeat == player.DraftSessionSeat);
+        var playerPack = Packs.FirstOrDefault(p => p.CurrentSeat == player.DraftSessionSeat && p.PackNumber == CurrentPackNumber);
         if (playerPack == null) throw new InvalidOperationException("no pack at player seat");
 
         // check if pack contains the selected card

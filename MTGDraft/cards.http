@@ -1,29 +1,27 @@
 TODO
-double check bot choices are working as intended
-add cards to a player deck endpoint
+improve pack generation
+login auth
+AI bot
+real-time updates (signalR)
 
-###
-GET http://localhost:5189/DraftSession/1
-###
+
+
+### get the draft sessions
+GET http://localhost:5189/DraftSession/2
+### get the players view
+GET http://localhost:5189/DraftSession/2/Player/9
+### get the players
 GET http://localhost:5189/Players/
-###
-GET http://localhost:5189/DraftSession/1/Player/8
-###
-POST http://localhost:5189/DraftSession/1/Advance
-###
+### create a player
 POST http://localhost:5189/Players/
 Content-Type: application/json
 
 {
-    "name": "Bot",
-    "IsBot": true,
+    "name": "Player",
+    "IsBot": false,
     "Decks": []
 }
-###
-POST http://localhost:5189/DraftSession/1/Start
-###
-DELETE http://localhost:5189/DraftSession/1
-###
+### create a draft session
 POST http://localhost:5189/DraftSession/
 Content-Type: application/json
 
@@ -32,48 +30,22 @@ Content-Type: application/json
     "playerCount": 8,
     "createdAt": "2026-02-19T00:00:00Z"
 }
-###
-POST http://localhost:5189/DraftSession/1/Pick
+### join the session
+POST http://localhost:5189/DraftSession/2/Join/9
+### start the session
+POST http://localhost:5189/DraftSession/2/Start
+### pick a card
+POST http://localhost:5189/DraftSession/2/Pick
 Content-Type: application/json
 
 {
-    "playerId": 1,
-    "packCardId": 1
+    "playerId": 9,
+    "packCardId": 559
 }
-###
-POST http://localhost:5189/DraftSession/1/Pick
-Content-Type: application/json
 
-{
-    "playerId": 1,
-    "packCardId": 1
-}
-###
-GET http://localhost:5189/DraftSession/1
-###
-DELETE http://localhost:5189/DraftSession/1
-###
-POST http://localhost:5189/DraftSession/1/Join/1
-###
-POST http://localhost:5189/DraftSession/1/Join/2
-###
-POST http://localhost:5189/DraftSession/1/Join/3
-###
-POST http://localhost:5189/DraftSession/1/Join/4
-###
-POST http://localhost:5189/DraftSession/1/Join/5
-###
-POST http://localhost:5189/DraftSession/1/Join/6
-###
-POST http://localhost:5189/DraftSession/1/Join/7
-###
-POST http://localhost:5189/DraftSession/1/Join/8
-###
-POST http://localhost:5189/DraftSession/1/Join/9
-###
-PATCH http://localhost:5189/DraftSession/2
-Content-Type: application/json
-
-{
-    "DraftState": "InProgress"
-}
+### advance the gamestate
+POST http://localhost:5189/DraftSession/2/Advance
+### make the decks at end
+POST http://localhost:5189/DraftSession/1/CreateDecks
+### clear all players in session
+POST http://localhost:5189/DraftSession/1/Clear

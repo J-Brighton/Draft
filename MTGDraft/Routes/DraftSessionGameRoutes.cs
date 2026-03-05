@@ -5,7 +5,6 @@ using MTGDraft.DTOs.Player;
 using MTGDraft.DTOs.Pack;
 using MTGDraft.DTOs.PackCard;
 using MTGDraft.DTOs.Card;
-using System.Security.Cryptography.X509Certificates;
 
 namespace MTGDraft.Routes;
 
@@ -77,6 +76,34 @@ public static class DraftSessionGameRoutes
                 return Results.BadRequest(ex.Message);
             }
             catch (InvalidOperationException ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+        });
+    
+        // create decks from drafted cards
+        group.MapPost("/{id}/CreateDecks", async (int id, DraftEngineService service) =>
+        {
+            try
+            {
+                await service.CreateDraftDecks(id);
+                return Results.Ok("decks created successfully");
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+        });
+    
+        // clear players from draft
+        group.MapPost("/{id}/Clear", async (int id, DraftEngineService service) =>
+        {
+            try
+            {
+                await service.ClearSessionId(id);
+                return Results.Ok("players removed from session");
+            }
+            catch (Exception ex)
             {
                 return Results.BadRequest(ex.Message);
             }
