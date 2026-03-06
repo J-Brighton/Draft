@@ -26,6 +26,12 @@ namespace MTGDraft.Migrations
                     b.Property<int>("CardNumber")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("FoilType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsBasicLand")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -39,6 +45,9 @@ namespace MTGDraft.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SetId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Treatment")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -114,9 +123,8 @@ namespace MTGDraft.Migrations
                     b.Property<bool>("DraftDirectionClockwise")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("DraftState")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("DraftState")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PlayerCount")
                         .HasColumnType("INTEGER");
@@ -164,7 +172,7 @@ namespace MTGDraft.Migrations
                     b.Property<int>("CardId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsFoil")
+                    b.Property<int>("FoilType")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsPicked")
@@ -174,6 +182,9 @@ namespace MTGDraft.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("PickedByPlayerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Treatment")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

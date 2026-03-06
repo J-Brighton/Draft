@@ -45,38 +45,38 @@ public static class DraftSessionInfoRoutes
         group.MapGet("/{id}", async (int id, DraftContext context) =>
         {
             var session = await context.DraftSessions
-                .Where(draft => draft.Id == id)
-                .Select(draft => new DraftSessionDTO(
-                    draft.Id,
-                    draft.SetCode,
-                    draft.PlayerCount,
-                    draft.CurrentPickIndex,
-                    draft.CurrentPackNumber,
-                    draft.DraftPlayers.Select(p => new PlayerSummaryDTO(
+                .Where(d => d.Id == id)
+                .Select(d => new DraftSessionDTO(
+                    d.Id,
+                    d.SetCode,
+                    d.PlayerCount,
+                    d.CurrentPickIndex,
+                    d.CurrentPackNumber,
+                    d.DraftPlayers.Select(p => new PlayerSummaryDTO(
                         p.Id,
                         p.Name,
-                        p.IsBot,
-                        p.DraftSessionId,
-                        p.DraftSessionSeat
+                        p.IsBot
                     )).ToList(),
-                    draft.DraftState,
-                    draft.CreatedAt,
-                    draft.Packs.Select(pack => new PackDTO(
-                        pack.Id,
-                        pack.PackNumber,
-                        pack.OriginalSeat,
-                        pack.Cards.Select(packcard => new PackCardDTO(
-                            packcard.Id,
-                            packcard.IsPicked,
-                            packcard.PickedByPlayerId,
-                            packcard.IsFoil,
+                    d.DraftState,
+                    d.CreatedAt,
+                    d.Packs.Select(p => new PackDTO(
+                        p.Id,
+                        p.PackNumber,
+                        p.OriginalSeat,
+                        p.Cards.Select(pc => new PackCardDTO(
+                            pc.Id,
+                            pc.IsPicked,
+                            pc.PickedByPlayerId,
+                            pc.FoilType,
                             new CardDTO(
-                                packcard.Card.Id,
-                                packcard.Card.Name,
-                                packcard.Card.Rarity,
-                                packcard.Card.SetCode,  
-                                packcard.Card.CardNumber,
-                                packcard.Card.SetId
+                                pc.Card.Id,
+                                pc.Card.Name,
+                                pc.Card.Rarity,
+                                pc.Card.SetCode,  
+                                pc.Card.CardNumber,
+                                pc.Card.SetId,
+                                pc.Card.Treatment,
+                                pc.Card.FoilType
                             )
                         )).ToList()
                     )).ToList()
@@ -94,14 +94,14 @@ public static class DraftSessionInfoRoutes
         {
             // find the player
             var player = await context.Players
-                .Where(player => player.Id == playerId && player.DraftSessionId == sessionId)
-                .Select(player => new PlayerSessionSummaryDTO(
-                    player.Id, 
-                    player.Name, 
-                    player.IsBot, 
-                    player.DraftSessionId, 
-                    player.DraftSessionSeat,
-                    player.HasPickedThisRound
+                .Where(p => p.Id == playerId && p.DraftSessionId == sessionId)
+                .Select(p => new PlayerSessionSummaryDTO(
+                    p.Id, 
+                    p.Name, 
+                    p.IsBot, 
+                    p.DraftSessionId, 
+                    p.DraftSessionSeat,
+                    p.HasPickedThisRound
                 )).FirstOrDefaultAsync();
             if (player == null) return Results.NotFound();
 
@@ -132,19 +132,21 @@ public static class DraftSessionInfoRoutes
             var currentPack = await context.Packs
                 .Where(pack => pack.DraftSessionId == sessionId && pack.CurrentSeat == player.DraftSessionSeat && pack.PackNumber == session.CurrentPackNumber)
                 .SelectMany(pack => pack.Cards)
-                .Where(packcard => !packcard.IsPicked)
-                .Select(packcard => new PackCardDTO(
-                    packcard.Id,
-                    packcard.IsPicked,
-                    packcard.PickedByPlayerId,
-                    packcard.IsFoil,
+                .Where(pc => !pc.IsPicked)
+                .Select(pc => new PackCardDTO(
+                    pc.Id,
+                    pc.IsPicked,
+                    pc.PickedByPlayerId,
+                    pc.FoilType,
                     new CardDTO(
-                        packcard.Card.Id,
-                        packcard.Card.Name,
-                        packcard.Card.Rarity,
-                        packcard.Card.SetCode,
-                        packcard.Card.CardNumber,
-                        packcard.Card.SetId
+                        pc.Card.Id,
+                        pc.Card.Name,
+                        pc.Card.Rarity,
+                        pc.Card.SetCode,
+                        pc.Card.CardNumber,
+                        pc.Card.SetId,
+                        pc.Card.Treatment,
+                        pc.Card.FoilType
                     )
                 )).ToListAsync();
 
@@ -155,14 +157,16 @@ public static class DraftSessionInfoRoutes
                     pc.Id,
                     pc.IsPicked,
                     pc.PickedByPlayerId,
-                    pc.IsFoil,
+                    pc.FoilType,
                     new CardDTO(
                         pc.Card.Id,
                         pc.Card.Name,
                         pc.Card.Rarity,
                         pc.Card.SetCode,
                         pc.Card.CardNumber,
-                        pc.Card.SetId
+                        pc.Card.SetId,
+                        pc.Card.Treatment,
+                        pc.Card.FoilType
                     )
                 )).ToListAsync();
 

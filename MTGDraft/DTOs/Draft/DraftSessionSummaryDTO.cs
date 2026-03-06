@@ -1,4 +1,5 @@
 using MTGDraft.DTOs.Player;
+using MTGDraft.Enums;
 
 namespace MTGDraft.DTOs.Draft;
 
@@ -9,7 +10,7 @@ public record class DraftSessionSummaryDTO(
     int CurrentPickIndex,
     int CurrentPackNumber,
     List<PlayerSessionSummaryDTO> Players,
-    string DraftState,
+    DraftState DraftState,
     DateTime CreatedAt
 );
 

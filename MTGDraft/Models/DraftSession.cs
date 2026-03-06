@@ -1,6 +1,7 @@
 using MTGDraft.DTOs.PackCard;
 using MTGDraft.DTOs.Player;
-using MTGDraft.Migrations;
+using MTGDraft.Enums;
+using MTGDraft.PackGeneration;
 
 namespace MTGDraft.Models;
 
@@ -10,7 +11,7 @@ public class DraftSession
     public string SetCode { get ; set; } = null!;
     public int PlayerCount { get; set; }
     public List<Player> DraftPlayers { get; set; } = new List<Player>();
-    public string DraftState { get; set;} = null!;
+    public DraftState DraftState { get; set;}
     public int CurrentPackNumber { get; set; } = 1;
     public int CurrentPickIndex { get; set; }
     public bool DraftDirectionClockwise { get; set; }
@@ -32,7 +33,7 @@ public class DraftSession
         }
 
         // check if the session already started
-        if (DraftState != "NotStarted")
+        if (DraftState != DraftState.NotStarted)
         {
             throw new InvalidOperationException("cannot join a started draft");
         }
@@ -42,29 +43,25 @@ public class DraftSession
         player.DraftSessionSeat = DraftPlayers.Count();
     }
 
-    public void StartDraft(Set set)
+    public void StartDraft(List<Pack> packs)
     {
         // check for player count
         if (DraftPlayers.Count != PlayerCount) throw new InvalidOperationException($"Cannot start draft without exactly {PlayerCount} players");
 
         // check if already started
-        if (DraftState != "NotStarted") throw new InvalidOperationException("Draft has already started");
-
-        Console.WriteLine("BEFORE PACK GENERATION");
-        // generate packs
-        Packs = DraftSessionFactory.GeneratePacks(set, PlayerCount);
+        if (DraftState != DraftState.NotStarted) throw new InvalidOperationException("Draft has already started");
 
         // initialise the draft
-        DraftState = "InProgress";
+        Packs = packs;
+        DraftState = DraftState.InProgress;
         CurrentPackNumber = 1;
         CurrentPickIndex = 0;
-        DraftDirectionClockwise = true;
     }
 
     public PackCard PickCard(PickPackCardDTO pick)
     {
         // check if draft is running
-        if (DraftState != "InProgress") throw new InvalidOperationException("draft is not in progress");
+        if (DraftState != DraftState.InProgress) throw new InvalidOperationException("draft is not in progress");
 
         // check if player exists
         var player = DraftPlayers.FirstOrDefault(p => p.Id == pick.PlayerId);
@@ -94,7 +91,7 @@ public class DraftSession
     public void Advance()
     {
         // make sure game is in progress
-        if (DraftState != "InProgress") throw new InvalidOperationException("draft is not in progress");
+        if (DraftState != DraftState.InProgress) throw new InvalidOperationException("draft is not in progress");
 
         // make sure all players have picked
         if (!DraftPlayers.All(p => p.HasPickedThisRound)) throw new InvalidOperationException("not all players have picked");
@@ -135,7 +132,7 @@ public class DraftSession
 
         if (CurrentPackNumber > 3)
         {
-            DraftState = "Completed";
+            DraftState = DraftState.Complete;
         }
     }
 }

@@ -1,3 +1,5 @@
+using MTGDraft.Enums;
+
 namespace MTGDraft.Models;
 
 public class PackCard
@@ -6,9 +8,10 @@ public class PackCard
 
     public int PackId { get; set; }
     public int CardId { get; set; }
-    public bool IsFoil { get; set; }
     public bool IsPicked { get; set; }
     public int? PickedByPlayerId { get; set; }
+    public CardTreatment Treatment { get; set; }
+    public FoilType FoilType { get; set; }
     
     public Pack Pack { get; set; } = null!;
     public Card Card { get; set; } = null!;

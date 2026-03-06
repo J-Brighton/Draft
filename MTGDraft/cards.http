@@ -1,15 +1,34 @@
 TODO
 improve pack generation
+- updated card, go through and update everything using it
+
+go through an implement enums
+
+
+-- 
+
+added enums and updated models/DTOs
+made some adjustments to which DTOs are used by functions
+changed pack generation 
+    more representitive of real odds also allows for special printings (treatment / foil)
+    taken from draftsessionfactory into own folder
+    separate card list into buckets, then generate packs from cards within desired bucket
+    switch case nextdouble based roll to pick a random card 
+
+
+
+
+update card to use manacost, typeline, oracletext, power, toughness
 login auth
 AI bot
 real-time updates (signalR)
 
-
-
+###
+GET http://localhost:5189/debug/pack/
 ### get the draft sessions
-GET http://localhost:5189/DraftSession/2
+GET http://localhost:5189/DraftSession/3
 ### get the players view
-GET http://localhost:5189/DraftSession/2/Player/9
+GET http://localhost:5189/DraftSession/3/Player/1
 ### get the players
 GET http://localhost:5189/Players/
 ### create a player
@@ -17,8 +36,8 @@ POST http://localhost:5189/Players/
 Content-Type: application/json
 
 {
-    "name": "Player",
-    "IsBot": false,
+    "name": "Bot",
+    "IsBot": true,
     "Decks": []
 }
 ### create a draft session
@@ -30,22 +49,24 @@ Content-Type: application/json
     "playerCount": 8,
     "createdAt": "2026-02-19T00:00:00Z"
 }
-### join the session
-POST http://localhost:5189/DraftSession/2/Join/9
+###
+POST http://localhost:5189/DraftSession/3/Join/8
 ### start the session
-POST http://localhost:5189/DraftSession/2/Start
+POST http://localhost:5189/DraftSession/3/Start
 ### pick a card
-POST http://localhost:5189/DraftSession/2/Pick
+POST http://localhost:5189/DraftSession/3/Pick
 Content-Type: application/json
 
 {
-    "playerId": 9,
-    "packCardId": 559
+    "playerId": 1,
+    "packCardId": 768
 }
 
 ### advance the gamestate
-POST http://localhost:5189/DraftSession/2/Advance
+POST http://localhost:5189/DraftSession/3/Advance
 ### make the decks at end
 POST http://localhost:5189/DraftSession/1/CreateDecks
 ### clear all players in session
 POST http://localhost:5189/DraftSession/1/Clear
+###
+DELETE http://localhost:5189/DraftSession/2

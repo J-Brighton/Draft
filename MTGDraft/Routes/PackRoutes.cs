@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using MTGDraft.Data;
+using MTGDraft.Enums;
 using MTGDraft.DTOs.Card;
 using MTGDraft.DTOs.Pack;
 using MTGDraft.DTOs.PackCard;
+using MTGDraft.PackGeneration;
 
 namespace MTGDraft.Routes;
 
@@ -16,23 +18,25 @@ public static class PackRoutes
         group.MapGet("/{id}", async (int id, DraftContext context) =>
         {
             var pack = await context.Packs
-                .Where(pack => pack.Id == id)
-                .Select(pack => new PackDTO(
-                    pack.Id,
-                    pack.PackNumber,
-                    pack.OriginalSeat,
-                    pack.Cards.Select(packcard => new PackCardDTO(
-                        packcard.Id,
-                        packcard.IsPicked,
-                        packcard.PickedByPlayerId,
-                        packcard.IsFoil,
+                .Where(p => p.Id == id)
+                .Select(p => new PackDTO(
+                    p.Id,
+                    p.PackNumber,
+                    p.OriginalSeat,
+                    p.Cards.Select(pc => new PackCardDTO(
+                        pc.Id,
+                        pc.IsPicked,
+                        pc.PickedByPlayerId,
+                        pc.FoilType,
                         new CardDTO(
-                            packcard.Card.Id,
-                            packcard.Card.Name,
-                            packcard.Card.Rarity,
-                            packcard.Card.SetCode,  
-                            packcard.Card.CardNumber,
-                            packcard.Card.SetId
+                            pc.Card.Id,
+                            pc.Card.Name,
+                            pc.Card.Rarity,
+                            pc.Card.SetCode,  
+                            pc.Card.CardNumber,
+                            pc.Card.SetId,
+                            pc.Card.Treatment,
+                            pc.Card.FoilType
                         )
                     )).ToList()
                 )).SingleOrDefaultAsync();
@@ -49,18 +53,20 @@ public static class PackRoutes
         {
             var packCard = await context.PackCards
                 .Where(pc => pc.Id == id && pc.PackId == packId)
-                .Select(packcard => new PackCardDTO(
-                    packcard.Id,
-                    packcard.IsPicked,
-                    packcard.PickedByPlayerId,
-                    packcard.IsFoil,
+                .Select(pc => new PackCardDTO(
+                    pc.Id,
+                    pc.IsPicked,
+                    pc.PickedByPlayerId,
+                    pc.FoilType,
                     new CardDTO(
-                        packcard.Card.Id,
-                        packcard.Card.Name,
-                        packcard.Card.Rarity,
-                        packcard.Card.SetCode,  
-                        packcard.Card.CardNumber,
-                        packcard.Card.SetId
+                        pc.Card.Id,
+                        pc.Card.Name,
+                        pc.Card.Rarity,
+                        pc.Card.SetCode,  
+                        pc.Card.CardNumber,
+                        pc.Card.SetId,
+                        pc.Card.Treatment,
+                        pc.Card.FoilType
                     )
                 )).SingleOrDefaultAsync();
 
@@ -69,6 +75,45 @@ public static class PackRoutes
             }
 
             return Results.Ok(packCard);
+        });
+
+        app.MapGet("/debug/pack", async (DraftContext context) =>
+        {
+            var set = await context.Sets.Where(s => s.Code == "ECL").Include(s => s.Cards).SingleOrDefaultAsync();
+            if (set is null) return Results.NotFound("didnt find ECL");
+
+            var generator = new PackGenerator();
+            var packs = generator.GeneratePacks(set, playerCount: 1);
+            var pack = packs.First();
+
+            foreach (var pc in pack.Cards)
+            {
+                pc.Card = set.Cards.Single(c => c.Id == pc.CardId);
+            }
+
+            var dto = new
+            {
+                pack.PackNumber,
+                pack.OriginalSeat,
+                Cards = pack.Cards.Select(pc => new PackCardDTO(
+                    pc.Id,
+                    pc.IsPicked,
+                    pc.PickedByPlayerId,
+                    pc.FoilType,
+                    new CardDTO(
+                        pc.Card.Id,
+                        pc.Card.Name,
+                        pc.Card.Rarity,
+                        pc.Card.SetCode,
+                        pc.Card.CardNumber,
+                        pc.Card.SetId,
+                        pc.Card.Treatment,
+                        pc.Card.FoilType
+                    )
+                )).ToList()
+            };
+
+            return Results.Ok(dto);
         });
 
     }

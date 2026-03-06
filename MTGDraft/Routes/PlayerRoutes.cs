@@ -43,9 +43,7 @@ public static class PlayerRoutes
                 .Select(p => new PlayerSummaryDTO(
                     p.Id, 
                     p.Name, 
-                    p.IsBot,
-                    p.DraftSessionId,
-                    p.DraftSessionSeat
+                    p.IsBot
                 )).ToListAsync();
             return Results.Ok(players);
         });

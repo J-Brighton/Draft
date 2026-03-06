@@ -19,7 +19,7 @@ namespace MTGDraft.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     SetCode = table.Column<string>(type: "TEXT", nullable: false),
                     PlayerCount = table.Column<int>(type: "INTEGER", nullable: false),
-                    DraftState = table.Column<string>(type: "TEXT", nullable: false),
+                    DraftState = table.Column<int>(type: "INTEGER", nullable: false),
                     CurrentPackNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     CurrentPickIndex = table.Column<int>(type: "INTEGER", nullable: false),
                     DraftDirectionClockwise = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -98,7 +98,10 @@ namespace MTGDraft.Migrations
                     Rarity = table.Column<string>(type: "TEXT", nullable: false),
                     SetCode = table.Column<string>(type: "TEXT", nullable: false),
                     CardNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    SetId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SetId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Treatment = table.Column<int>(type: "INTEGER", nullable: false),
+                    FoilType = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsBasicLand = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -139,9 +142,10 @@ namespace MTGDraft.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     PackId = table.Column<int>(type: "INTEGER", nullable: false),
                     CardId = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsFoil = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsPicked = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PickedByPlayerId = table.Column<int>(type: "INTEGER", nullable: true)
+                    PickedByPlayerId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Treatment = table.Column<int>(type: "INTEGER", nullable: false),
+                    FoilType = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

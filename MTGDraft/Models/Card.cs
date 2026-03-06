@@ -1,3 +1,5 @@
+using MTGDraft.Enums;
+
 namespace MTGDraft.Models;
 
 public class Card
@@ -12,10 +14,11 @@ public class Card
     
     public int CardNumber { get; set; }
 
-    // foreign key linking this card to its set
     public int SetId { get; set; }
-
-    // navigation property for EF Core
     public Set? Set { get; set; }
+
+    public CardTreatment Treatment { get; set; } = CardTreatment.Regular;
+    public FoilType FoilType { get; set; } = FoilType.NonFoil;
+    public bool IsBasicLand { get; set; }
 }
 

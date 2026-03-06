@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MTGDraft.Data;
 using MTGDraft.DTOs.PackCard;
-using MTGDraft.Migrations;
+using MTGDraft.Enums;
 using MTGDraft.Models;
 
 public class DraftEngineService
@@ -90,7 +90,7 @@ public class DraftEngineService
             .FirstOrDefaultAsync(s => s.Id == sessionId);
         if (session == null) throw new ArgumentException("invalid session id");
 
-        if (session.DraftState != "Completed") throw new InvalidOperationException("draft not complete");
+        if (session.DraftState != DraftState.Complete) throw new InvalidOperationException("draft not complete");
 
         foreach (var player in session.DraftPlayers)
         {

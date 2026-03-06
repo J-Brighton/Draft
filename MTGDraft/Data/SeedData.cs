@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using MTGDraft.Models;
 
 namespace MTGDraft.Data;
@@ -17,6 +18,7 @@ public static class SeedData
         var options = new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true
         };
+        options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
         var import = JsonSerializer.Deserialize<SetImportDTO>(json, options);
 
@@ -40,7 +42,10 @@ public static class SeedData
             Rarity = card.Rarity,
             CardNumber = card.CardNumber,
             SetCode = set.Code,
-            SetId = set.Id
+            SetId = set.Id,
+            Treatment = card.Treatment,
+            FoilType = card.FoilType,
+            IsBasicLand = card.IsBasicLand
         }).ToList();
 
         Console.WriteLine($"Adding {cards.Count} cards to context");

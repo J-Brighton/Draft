@@ -1,3 +1,5 @@
+using MTGDraft.Enums;
+
 namespace MTGDraft.DTOs.Card;
 
 public record class CardDTO(
@@ -6,5 +8,7 @@ public record class CardDTO(
     string Rarity,
     string SetCode,
     int CardNumber,
-    int SetId
+    int SetId,
+    CardTreatment Treatment,
+    FoilType FoilType
 );
