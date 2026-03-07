@@ -52,7 +52,7 @@ public class SetCardBuckets
             BorderlessRare = GetBucket(groups, CardTreatment.Borderless, "R"),
             BorderlessMythic = GetBucket(groups, CardTreatment.Borderless, "M"),
 
-            ReversableShock = GetBucket(groups, CardTreatment.ReversibleShock, "R"),
+            ReversableShock = GetBucket(groups, CardTreatment.ReversableShock, "R"),
 
             BasicLands = GetBucket(groups, CardTreatment.Regular, "C").Where(c => c.IsBasicLand).ToList(),
             FullArtBasicLands = GetBucket(groups, CardTreatment.FullArt, "C").Where(c => c.IsBasicLand).ToList(),

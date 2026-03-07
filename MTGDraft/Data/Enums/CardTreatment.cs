@@ -7,6 +7,6 @@ public enum CardTreatment
     Borderless,
     FullArt,
     SpecialGuest,
-    ReversibleShock
+    ReversableShock
 
 }

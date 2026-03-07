@@ -1,24 +1,8 @@
 TODO
-improve pack generation
-- updated card, go through and update everything using it
-
-go through an implement enums
-
-
--- 
-
-added enums and updated models/DTOs
-made some adjustments to which DTOs are used by functions
-changed pack generation 
-    more representitive of real odds also allows for special printings (treatment / foil)
-    taken from draftsessionfactory into own folder
-    separate card list into buckets, then generate packs from cards within desired bucket
-    switch case nextdouble based roll to pick a random card 
-
-
-
-
 update card to use manacost, typeline, oracletext, power, toughness
+
+
+
 login auth
 AI bot
 real-time updates (signalR)

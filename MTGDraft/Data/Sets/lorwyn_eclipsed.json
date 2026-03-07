@@ -2769,6 +2769,46 @@
     "treatment": "fable",
     "treatmentFoilType": "nonfoil",
     "isBasicLand": false
+  },
+  {
+    "name": "Hallowed Fountain // Hallowed Fountain",
+    "rarity": "R",
+    "cardNumber": 347,
+    "treatment": "reversableshock",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Steam Vents // Steam Vents",
+    "rarity": "R",
+    "cardNumber": 348,
+    "treatment": "reversableshock",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Blood Crypt // Blood Crypt",
+    "rarity": "R",
+    "cardNumber": 349,
+    "treatment": "reversableshock",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Overgrown Tomb // Overgrown Tomb",
+    "rarity": "R",
+    "cardNumber": 350,
+    "treatment": "reversableshock",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Temple Garden",
+    "rarity": "R",
+    "cardNumber": 351,
+    "treatment": "reversableshock",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
   }
 ]
 }

@@ -19,6 +19,11 @@ public class PackGenerator : IPackGenerator
         var buckets = SetCardBuckets.Build(set);
         var packs = new List<Pack>();
 
+        Console.WriteLine($"Common count: {buckets.Common.Count}");
+        Console.WriteLine($"Uncommon count: {buckets.Uncommon.Count}");
+        Console.WriteLine($"Rare count: {buckets.Rare.Count}");
+        Console.WriteLine($"Mythic count: {buckets.Mythic.Count}");
+
         for (int seat = 0 ; seat < playerCount ; seat++)
         {
             for (int packNum = 1 ; packNum <= 3 ; packNum++)
@@ -88,6 +93,18 @@ public class PackGenerator : IPackGenerator
     private Card GenerateWildcard(SetCardBuckets bucket)
     {
         double roll = _random.NextDouble() * 100;
+
+        if (bucket.Common.Count == 0) { Console.WriteLine("common bucket empty"); }
+        if (bucket.Uncommon.Count == 0) { Console.WriteLine("Uncommon bucket empty"); }
+        if (bucket.Rare.Count == 0) { Console.WriteLine("Rare bucket empty"); }
+        if (bucket.Mythic.Count == 0) { Console.WriteLine("Mythic bucket empty"); }
+        if (bucket.FableUncommon.Count == 0) { Console.WriteLine("FableUncommon bucket empty"); }
+        if (bucket.FableRare.Count == 0) { Console.WriteLine("FableRare bucket empty"); }
+        if (bucket.FableMythic.Count == 0) { Console.WriteLine("FableMythic bucket empty"); }
+        if (bucket.BorderlessRare.Count == 0) { Console.WriteLine("BorderlessRare bucket empty"); }
+        if (bucket.BorderlessMythic.Count == 0) { Console.WriteLine("BorderlessMythic bucket empty"); }
+        if (bucket.ReversableShock.Count == 0) { Console.WriteLine("ReversableShock bucket empty"); }
+
 
         return roll switch
         {
