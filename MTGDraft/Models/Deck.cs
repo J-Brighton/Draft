@@ -10,5 +10,5 @@ public class Deck
 
     public Player Player { get; set; } = null!;
 
-    public List<DeckCard> DeckCards { get; set; } = new List<DeckCard>();    
+    public List<DeckCard> DeckCards { get; set; } = new List<DeckCard>();
 }

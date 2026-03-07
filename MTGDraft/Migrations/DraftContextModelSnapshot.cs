@@ -70,9 +70,14 @@ namespace MTGDraft.Migrations
                     b.Property<int>("PlayerId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PlayerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Decks");
                 });
@@ -218,9 +223,14 @@ namespace MTGDraft.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DraftSessionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Players");
                 });
@@ -244,6 +254,36 @@ namespace MTGDraft.Migrations
                     b.ToTable("Sets");
                 });
 
+            modelBuilder.Entity("MTGDraft.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("MTGDraft.Models.Card", b =>
                 {
                     b.HasOne("MTGDraft.Models.Set", "Set")
@@ -262,6 +302,10 @@ namespace MTGDraft.Migrations
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MTGDraft.Models.User", null)
+                        .WithMany("Decks")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Player");
                 });
@@ -321,7 +365,13 @@ namespace MTGDraft.Migrations
                         .WithMany("DraftPlayers")
                         .HasForeignKey("DraftSessionId");
 
+                    b.HasOne("MTGDraft.Models.User", "User")
+                        .WithMany("Players")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("DraftSession");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MTGDraft.Models.Deck", b =>
@@ -349,6 +399,13 @@ namespace MTGDraft.Migrations
             modelBuilder.Entity("MTGDraft.Models.Set", b =>
                 {
                     b.Navigation("Cards");
+                });
+
+            modelBuilder.Entity("MTGDraft.Models.User", b =>
+                {
+                    b.Navigation("Decks");
+
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

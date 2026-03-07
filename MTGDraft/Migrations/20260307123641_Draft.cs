@@ -45,6 +45,23 @@ namespace MTGDraft.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Packs",
                 columns: table => new
                 {
@@ -64,28 +81,6 @@ namespace MTGDraft.Migrations
                         principalTable: "DraftSessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Players",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    IsBot = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DraftSessionId = table.Column<int>(type: "INTEGER", nullable: true),
-                    DraftSessionSeat = table.Column<int>(type: "INTEGER", nullable: true),
-                    HasPickedThisRound = table.Column<bool>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Players", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Players_DraftSessions_DraftSessionId",
-                        column: x => x.DraftSessionId,
-                        principalTable: "DraftSessions",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -115,23 +110,31 @@ namespace MTGDraft.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Decks",
+                name: "Players",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    PlayerId = table.Column<int>(type: "INTEGER", nullable: false)
+                    IsBot = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true),
+                    DraftSessionId = table.Column<int>(type: "INTEGER", nullable: true),
+                    DraftSessionSeat = table.Column<int>(type: "INTEGER", nullable: true),
+                    HasPickedThisRound = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Decks", x => x.Id);
+                    table.PrimaryKey("PK_Players", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Decks_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Players_DraftSessions_DraftSessionId",
+                        column: x => x.DraftSessionId,
+                        principalTable: "DraftSessions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Players_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -162,6 +165,32 @@ namespace MTGDraft.Migrations
                         principalTable: "Packs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Decks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    PlayerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Decks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Decks_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Decks_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -213,6 +242,11 @@ namespace MTGDraft.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Decks_UserId",
+                table: "Decks",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PackCards_CardId",
                 table: "PackCards",
                 column: "CardId");
@@ -231,6 +265,11 @@ namespace MTGDraft.Migrations
                 name: "IX_Players_DraftSessionId",
                 table: "Players",
                 column: "DraftSessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_UserId",
+                table: "Players",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -259,6 +298,9 @@ namespace MTGDraft.Migrations
 
             migrationBuilder.DropTable(
                 name: "DraftSessions");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

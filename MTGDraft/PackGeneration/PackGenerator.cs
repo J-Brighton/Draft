@@ -23,6 +23,14 @@ public class PackGenerator : IPackGenerator
         Console.WriteLine($"Uncommon count: {buckets.Uncommon.Count}");
         Console.WriteLine($"Rare count: {buckets.Rare.Count}");
         Console.WriteLine($"Mythic count: {buckets.Mythic.Count}");
+        Console.WriteLine($"FableUncommon count: {buckets.FableUncommon.Count}");
+        Console.WriteLine($"FableRare count: {buckets.FableRare.Count}");
+        Console.WriteLine($"FableMythic count: {buckets.FableMythic.Count}");
+        Console.WriteLine($"BorderlessRare count: {buckets.BorderlessRare.Count}");
+        Console.WriteLine($"BorderlessMythic count: {buckets.BorderlessMythic.Count}");
+        Console.WriteLine($"ReversableShock count: {buckets.ReversableShock.Count}");
+
+
 
         for (int seat = 0 ; seat < playerCount ; seat++)
         {

@@ -14,6 +14,8 @@ public static class DraftSessionGameRoutes
     {
         var group = app.MapGroup("/DraftSession");
 
+        group.RequireAuthorization();
+
         // mark a card picked
         group.MapPost("/{id}/Pick", async (int id, PickPackCardDTO pick, DraftEngineService service) =>
         {

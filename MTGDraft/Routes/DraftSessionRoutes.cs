@@ -14,6 +14,8 @@ public static class DraftSessionRoutes
     {
         var group = app.MapGroup("/DraftSession");
 
+        group.RequireAuthorization();
+
         // create a draft session
         group.MapPost("/", async (AddDraftSessionDTO dto, DraftSessionService service) => {
             try {

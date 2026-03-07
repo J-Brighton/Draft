@@ -1,18 +1,40 @@
 TODO
-update card to use manacost, typeline, oracletext, power, toughness
-
-
+// update card to use manacost, typeline, oracletext, power, toughness
 
 login auth
+
+
+fix deck handling (structure and execution)
+
+
 AI bot
 real-time updates (signalR)
+###
+GET http://localhost:5189/whoami
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MjkzMTI2MiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.pHujy090vNWIropyynTt6MYBLK338WMy3jkPEfBoL3M
+###
+POST http://localhost:5189/auth/register
+Content-Type: application/json
 
+{
+    "email": "user@email.com",
+    "username": "user",
+    "password": "password"
+}
+###
+POST http://localhost:5189/auth/login
+Content-Type: application/json
+
+{
+    "email": "user@email.com",
+    "password": "password"
+}
 ###
 GET http://localhost:5189/debug/pack/
 ### get the draft sessions
-GET http://localhost:5189/DraftSession/3
+GET http://localhost:5189/DraftSession/
 ### get the players view
-GET http://localhost:5189/DraftSession/3/Player/1
+GET http://localhost:5189/DraftSession/1/Player/1
 ### get the players
 GET http://localhost:5189/Players/
 ### create a player
@@ -20,12 +42,13 @@ POST http://localhost:5189/Players/
 Content-Type: application/json
 
 {
-    "name": "Bot",
-    "IsBot": true,
+    "name": "User",
+    "IsBot": false,
     "Decks": []
 }
 ### create a draft session
 POST http://localhost:5189/DraftSession/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MjkzMTI2MiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.pHujy090vNWIropyynTt6MYBLK338WMy3jkPEfBoL3M
 Content-Type: application/json
 
 {
