@@ -12,7 +12,7 @@ public static class PackRoutes
 {
     public static void MapPackRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/Packs");
+        var group = app.MapGroup("api/Packs");
 
         // get the contents of a pack
         group.MapGet("/{id}", async (int id, DraftContext context) =>

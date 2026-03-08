@@ -12,7 +12,7 @@ public static class DraftSessionRoutes
 {
     public static void MapDraftSessionRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/DraftSession");
+        var group = app.MapGroup("api/DraftSession");
 
         group.RequireAuthorization();
 
@@ -39,7 +39,7 @@ public static class DraftSessionRoutes
                     session.CreatedAt
                 );
 
-                return Results.Created($"/DraftSession/{session.Id}", resultDto);
+                return Results.Created($"api/DraftSession/{session.Id}", resultDto);
             }
 
             catch (ArgumentException ex) {

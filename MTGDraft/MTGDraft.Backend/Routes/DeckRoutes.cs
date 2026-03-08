@@ -12,7 +12,7 @@ public static class DeckRoutes
 {
     public static void MapDeckRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("Players/{playerId}/Decks");
+        var group = app.MapGroup("api/Players/{playerId}/Decks");
 
         // create a deck for a player
         group.MapPost("/", async (int playerId, AddDeckDTO addDeckDTO, DraftContext context) =>

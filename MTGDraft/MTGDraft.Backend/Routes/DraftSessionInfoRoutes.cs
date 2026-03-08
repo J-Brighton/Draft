@@ -14,7 +14,7 @@ public static class DraftSessionInfoRoutes
 {
     public static void MapDraftSessionInfoRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/DraftSession");
+        var group = app.MapGroup("api/DraftSession");
 
         group.RequireAuthorization();
 

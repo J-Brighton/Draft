@@ -12,7 +12,7 @@ public static class DraftSessionGameRoutes
 {
     public static void MapDraftSessionGameRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/DraftSession");
+        var group = app.MapGroup("api/DraftSession");
 
         group.RequireAuthorization();
 

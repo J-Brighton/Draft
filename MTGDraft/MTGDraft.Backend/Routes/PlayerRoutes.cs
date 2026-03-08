@@ -12,7 +12,7 @@ public static class PlayerRoutes
 {
     public static void MapPlayerRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/Players");
+        var group = app.MapGroup("api/Players");
 
         group.RequireAuthorization();
 

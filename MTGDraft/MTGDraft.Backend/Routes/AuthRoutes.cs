@@ -9,7 +9,7 @@ public static class AuthRoutes
 {
     public static void MapAuthRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/auth");
+        var group = app.MapGroup("api/auth");
 
         // create/register user
         group.MapPost("/register", async (RegisterRequest req, DraftContext context) =>
