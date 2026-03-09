@@ -57,7 +57,7 @@ public class SetCardBuckets
             BasicLands = GetBucket(groups, CardTreatment.Regular, "C").Where(c => c.IsBasicLand).ToList(),
             FullArtBasicLands = GetBucket(groups, CardTreatment.FullArt, "C").Where(c => c.IsBasicLand).ToList(),
 
-            SpecialGuests = groups.Where(kvp => kvp.Key.Treatment == CardTreatment.SpecialGuest).SelectMany(kvp => kvp.Value).ToList()  
+            SpecialGuests = GetBucket(groups, CardTreatment.SpecialGuest, "M")  
         };
     }
 }

@@ -29,6 +29,7 @@ public class PackGenerator : IPackGenerator
         Console.WriteLine($"BorderlessRare count: {buckets.BorderlessRare.Count}");
         Console.WriteLine($"BorderlessMythic count: {buckets.BorderlessMythic.Count}");
         Console.WriteLine($"ReversableShock count: {buckets.ReversableShock.Count}");
+        Console.WriteLine($"SpecialGuest count: {buckets.SpecialGuests.Count}");
 
 
 
@@ -112,6 +113,8 @@ public class PackGenerator : IPackGenerator
         if (bucket.BorderlessRare.Count == 0) { Console.WriteLine("BorderlessRare bucket empty"); }
         if (bucket.BorderlessMythic.Count == 0) { Console.WriteLine("BorderlessMythic bucket empty"); }
         if (bucket.ReversableShock.Count == 0) { Console.WriteLine("ReversableShock bucket empty"); }
+        if (bucket.SpecialGuests.Count == 0) { Console.WriteLine("SpecialGuest bucket empty"); }
+
 
 
         return roll switch

@@ -2803,10 +2803,170 @@
     "isBasicLand": false
   },
   {
-    "name": "Temple Garden",
+    "name": "Temple Garden // Temple Garden",
     "rarity": "R",
     "cardNumber": 351,
     "treatment": "reversableshock",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Bitterblossom",
+    "rarity": "M",
+    "cardNumber": 352,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Devoted Druid",
+    "rarity": "M",
+    "cardNumber": 353,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Dolmen Gate",
+    "rarity": "M",
+    "cardNumber": 354,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Door of Destinies",
+    "rarity": "M",
+    "cardNumber": 355,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Faerie Macabre",
+    "rarity": "M",
+    "cardNumber": 356,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Goblin Chieftain",
+    "rarity": "M",
+    "cardNumber": 357,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Goblin Sharpshooter",
+    "rarity": "M",
+    "cardNumber": 358,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Heat Shimmer",
+    "rarity": "M",
+    "cardNumber": 359,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Helix Pinnacle",
+    "rarity": "M",
+    "cardNumber": 360,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Idyllic Tutor",
+    "rarity": "M",
+    "cardNumber": 361,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Kinsbaile Cavalier",
+    "rarity": "M",
+    "cardNumber": 362,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Leaf-Crowned Visionary",
+    "rarity": "M",
+    "cardNumber": 363,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Manamorphose",
+    "rarity": "M",
+    "cardNumber": 364,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Mistbind Clique",
+    "rarity": "M",
+    "cardNumber": 365,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Painter's Servant",
+    "rarity": "M",
+    "cardNumber": 366,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Regal Force",
+    "rarity": "M",
+    "cardNumber": 367,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Risen Reef",
+    "rarity": "M",
+    "cardNumber": 368,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Slippery Bogle",
+    "rarity": "M",
+    "cardNumber": 369,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Thousand-Year Elixir",
+    "rarity": "M",
+    "cardNumber": 370,
+    "treatment": "specialguest",
+    "treatmentFoilType": "nonfoil",
+    "isBasicLand": false
+  },
+  {
+    "name": "Wanderwine Prophets",
+    "rarity": "M",
+    "cardNumber": 371,
+    "treatment": "specialguest",
     "treatmentFoilType": "nonfoil",
     "isBasicLand": false
   }
