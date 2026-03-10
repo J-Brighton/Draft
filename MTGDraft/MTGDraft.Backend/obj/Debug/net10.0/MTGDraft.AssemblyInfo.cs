@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MTGDraft")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1dafb69b9cfc5236502f7b85a36e1980faacaf86")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b03ca23ec5e522f6bab67c81f106e59439f4cd9")]
 [assembly: System.Reflection.AssemblyProductAttribute("MTGDraft")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MTGDraft")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

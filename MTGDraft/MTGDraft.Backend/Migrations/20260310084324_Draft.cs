@@ -22,6 +22,7 @@ namespace MTGDraft.Migrations
                     DraftState = table.Column<int>(type: "INTEGER", nullable: false),
                     CurrentPackNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     CurrentPickIndex = table.Column<int>(type: "INTEGER", nullable: false),
+                    PickDeadline = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DraftDirectionClockwise = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },

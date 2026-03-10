@@ -14,6 +14,7 @@ public class DraftSession
     public DraftState DraftState { get; set;}
     public int CurrentPackNumber { get; set; } = 1;
     public int CurrentPickIndex { get; set; }
+    public DateTime? PickDeadline { get; set; }
     public bool DraftDirectionClockwise { get; set; }
     public DateTime CreatedAt { get; set; }
     public List<Pack> Packs { get; set; } = new List<Pack>();
@@ -27,7 +28,7 @@ public class DraftSession
         }
 
         // check if already in session
-        if (DraftPlayers.Any(p => p.Id == player.Id))
+        if (!player.IsBot && DraftPlayers.Any(p => p.Id == player.Id))
         {
             throw new InvalidOperationException("player already in session");
         }
@@ -133,6 +134,23 @@ public class DraftSession
         if (CurrentPackNumber > 3)
         {
             DraftState = DraftState.Complete;
+        }
+    }
+
+    public void PopulateSession(DraftSession session)
+    {
+        int missingPlayers = session.PlayerCount - session.DraftPlayers.Count;
+        if (missingPlayers <= 0 ) return;
+
+        for (int i = 0 ; i < missingPlayers ; i++)
+        {
+            var bot = new Player
+            {
+                Name = $"Bot {session.DraftPlayers.Count + 1}",
+                IsBot = true
+            };
+
+            session.AddPlayer(bot);
         }
     }
 }

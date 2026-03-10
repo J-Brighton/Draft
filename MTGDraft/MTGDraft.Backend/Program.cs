@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DraftContext>(options => options.UseSqlite("Data Source=Pack.db"));
 builder.Services.AddScoped<DraftSessionService>();
 builder.Services.AddScoped<DraftEngineService>();
+builder.Services.AddScoped<DraftTimerService>();
 builder.Services.AddScoped<JwtTokenService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;

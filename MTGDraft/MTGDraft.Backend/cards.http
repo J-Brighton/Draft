@@ -1,15 +1,50 @@
-TODO
-// update card to use manacost, typeline, oracletext, power, toughness
-
-login auth
+// TODO //
+real-time updates (signalR) - timer, which player has picked, pick and pack numbers, player disconnection, player joining
+timer service - add a pickdeadline to draft, add function to draftengineservice, call every second to check against time.now
 fix deck handling (structure and execution)
+frontend
 
-import specialguests that have CN 129 - 148
 
 
-AI bot
-real-time updates (signalR)
-Frontend
+// DONE //
+added PickDeadline variable to draftsession model
+added AutoPickCard func to DraftEngineService
+added StartPickTimer func to DraftEngineService
+added StopPickTimer func to DraftEngineService
+
+created DraftTimerService
+added ScheduleSession func to DraftTimerService
+added CancelDraft func to DraftTimerService
+added RunTimer func to DraftTimerService
+added BroadcastTimerStart func to DraftTimerService
+// created DraftHub for signalR to project haspicked, timer countdown, join and disconnection
+
+
+// ISSUES //
+the pickdeadline is never updated in the database
+treatments are never filled in PackCard
+
+// maybe look at this
+generalise the pack generation to work with other sets
+GenerateSingleECLPack or GenerateSingleEOEPack or GenerateSingleMOMPack
+
+contains
+generateCommons(Set set, int amount)
+generateUncommons(Set set, int amount, int specialprintWeighting)
+generateWildcard(Set set, Chances cardChances) - Chances has weighings for C U R M cards
+this will make it more scalable when implementing other sets
+
+packs will generally contain 
+6 commons
+have a chance for a special guest in the 7th common slot
+3 uncommons with a chance for a special printing
+a wildcard with varied rarity weighting
+rare / mythic with special printing
+trad foil of any rarity
+a land card
+
+
+
 ###
 GET http://localhost:5189/whoami
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3Mjk4NTM2OSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.uCyqe59ONPIII7GO0ipWeauwf15Ma43cMaI2slFCvGg
@@ -34,32 +69,31 @@ Content-Type: application/json
 GET http://localhost:5189/debug/pack/
 ### get the draft sessions
 GET http://localhost:5189/api/DraftSession/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
 ### get the players view
 GET http://localhost:5189/api/DraftSession/1/Player/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
 
 ### get the players
 GET http://localhost:5189/api/Players/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
 ###
 POST http://localhost:5189/api/DraftSession/1/Join/10
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
 
 ### create a player
 POST http://localhost:5189/api/Players/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
 Content-Type: application/json
 
 {
-    "name": "Bot",
-    "IsBot": true,
+    "name": "Player",
+    "IsBot": false,
     "Decks": []
 }
 ### create a draft session
 POST http://localhost:5189/api/DraftSession/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
 Content-Type: application/json
 
 {
@@ -68,28 +102,40 @@ Content-Type: application/json
     "createdAt": "2026-02-19T00:00:00Z"
 }
 ###
-POST http://localhost:5189/DraftSession/3/Join/8
+POST http://localhost:5189/api/DraftSession/4/Join/9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
+
 ### start the session
-POST http://localhost:5189/api/DraftSession/1/Start
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+POST http://localhost:5189/api/DraftSession/19/Start
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
 
 ### pick a card
 POST http://localhost:5189/api/DraftSession/1/Pick
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzE3NTI5OCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.trQY6853Hgf5flI5A5OcU9d5FzsZAuGfdzXWZtmn9X0
 Content-Type: application/json
 
 {
     "playerId": 1,
-    "packCardId": 54
+    "packCardId": 12
 }
 
 ### advance the gamestate
 POST http://localhost:5189/api/DraftSession/1/Advance
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+###
+GET http://localhost:5189/api/Players/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
 
 ### make the decks at end
-POST http://localhost:5189/DraftSession/1/CreateDecks
+POST http://localhost:5189/api/DraftSession/1/CreateDecks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+
 ### clear all players in session
 POST http://localhost:5189/DraftSession/1/Clear
 ###
-DELETE http://localhost:5189/DraftSession/2
+DELETE http://localhost:5189/api/DraftSession/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo
+
+###
+GET http://localhost:5189/DraftSession/1/Decks/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsInVzZXJuYW1lIjoidXNlciIsImV4cCI6MTc3MzA3MzIzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTg5LyJ9.Cse5CIsnRWb_B3cWPAC60_yxpF93ZBHNo6KbSpeZlSo

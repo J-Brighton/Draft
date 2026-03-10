@@ -131,6 +131,9 @@ namespace MTGDraft.Migrations
                     b.Property<int>("DraftState")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("PickDeadline")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("PlayerCount")
                         .HasColumnType("INTEGER");
 

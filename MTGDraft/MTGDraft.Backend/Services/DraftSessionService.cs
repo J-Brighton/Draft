@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using MTGDraft.Data;
 using MTGDraft.Models;
-using MTGDraft.DTOs.Draft;
-using MTGDraft.DTOs.Player;
 using MTGDraft.PackGeneration;
 
 public class DraftSessionService
 {
     private readonly DraftContext _context;
+    private readonly DraftEngineService _engine;
 
-    public DraftSessionService(DraftContext context)
+    public DraftSessionService(DraftContext context, DraftEngineService engine)
     {
         _context = context;
+        _engine = engine;
     }
 
     public async Task<DraftSession> CreateDraftSession(string setCode, int playerCount)
@@ -67,14 +67,19 @@ public class DraftSessionService
         var draftSet = await _context.Sets.Include(s => s.Cards).FirstOrDefaultAsync(s => s.Code == session.SetCode);
         if (draftSet == null) throw new ArgumentException("invalid set code");
         
+        if (session.DraftPlayers.Count < session.PlayerCount)
+        {
+            session.PopulateSession(session);
+        }
+
         // generate the packs
         var generator = new PackGenerator();
         var packs = generator.GeneratePacks(draftSet, session.PlayerCount);
 
         // start the draft
         session.StartDraft(packs);
-
         await _context.SaveChangesAsync();
+        await _engine.StartPickTimer(sessionId);
 
         return session;
     }

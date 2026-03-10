@@ -1,16 +1,66 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MTGDraft.Data;
 using MTGDraft.DTOs.PackCard;
 using MTGDraft.Enums;
 using MTGDraft.Models;
+using MTGDraft.Hubs;
 
 public class DraftEngineService
 {
     private readonly DraftContext _context;
+    private readonly DraftTimerService _timer;
 
-    public DraftEngineService(DraftContext context)
+    public DraftEngineService(DraftContext context, DraftTimerService timer)
     {
         _context = context;
+        _timer = timer;
+    }
+
+    public async Task StartPickTimer(int sessionId)
+    {
+        var deadline = DateTime.UtcNow.AddSeconds(20);
+        var session = await _context.DraftSessions.FindAsync(sessionId);
+        if (session == null) throw new ArgumentException("invalid session id");
+
+        session.PickDeadline = deadline;
+        await _context.SaveChangesAsync();
+
+        await _timer.ScheduleSession(sessionId, deadline);
+        await _timer.BroadcastTimerStart(sessionId, deadline);
+
+    }
+
+    public async Task StopPickTimer(int sessionId)
+    {
+        var session = await _context.DraftSessions.FindAsync(sessionId);
+        if (session == null) throw new ArgumentException("invalid session id");
+
+        session.PickDeadline = null;
+        await _context.SaveChangesAsync();
+
+        _timer.CancelDraft(sessionId);
+    }
+
+    public async Task<DraftSession> Advance(int sessionId)
+    {
+        var session = await _context.DraftSessions
+            .Include(session => session.DraftPlayers)
+            .Include(session => session.Packs)
+                .ThenInclude(pack => pack.Cards)
+            .FirstOrDefaultAsync(session => session.Id == sessionId);
+
+        if (session == null) throw new ArgumentException("invalid session id");
+
+        session.Advance();
+        await _context.SaveChangesAsync();
+
+        if (session.DraftState == DraftState.Complete)
+        {
+            //await hub.Clients.Group($"draft-{sessionId}").SendAsync("Draft Complete, Stopped Timer");
+            await StopPickTimer(sessionId);
+        }
+        return session;
     }
 
     public async Task<PackCard> PickCard(int sessionId, PickPackCardDTO pick)
@@ -33,20 +83,34 @@ public class DraftEngineService
         return pickedCard;
     }
 
-    public async Task<DraftSession> Advance(int sessionId)
+    public async Task AutoPickCard(int sessionId)
     {
         var session = await _context.DraftSessions
-            .Include(session => session.DraftPlayers)
-            .Include(session => session.Packs)
-                .ThenInclude(pack => pack.Cards)
-            .FirstOrDefaultAsync(session => session.Id == sessionId);
-
+            .Include(s => s.DraftPlayers)
+            .Include(s => s.Packs)
+                .ThenInclude(p => p.Cards)
+            .FirstOrDefaultAsync(s => s.Id == sessionId);
         if (session == null) throw new ArgumentException("invalid session id");
 
-        session.Advance();
+        foreach (var player in session.DraftPlayers.Where(p => !p.IsBot && !p.HasPickedThisRound))
+        {
+            var pack = session.Packs.FirstOrDefault(
+                p => p.CurrentSeat == player.DraftSessionSeat && 
+                p.PackNumber == session.CurrentPackNumber && 
+                p.Cards.Any(c => !c.IsPicked)
+            );
+            if (pack == null) continue;
+
+            // pick random
+            var cardToPick = pack.Cards
+                .Where(c => !c.IsPicked)
+                .OrderBy(_ => Guid.NewGuid())
+                .First();
+
+            session.PickCard(new PickPackCardDTO(player.Id, cardToPick.Id));
+        }
 
         await _context.SaveChangesAsync();
-        return session;
     }
 
     public async Task BotPickCard(int sessionId)
