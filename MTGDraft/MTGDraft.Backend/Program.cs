@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MTGDraft.Data;
 using MTGDraft.Routes;
-using Microsoft.Extensions.Options;
+using MTGDraft.Hubs;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +13,22 @@ builder.Services.AddScoped<DraftSessionService>();
 builder.Services.AddScoped<DraftEngineService>();
 builder.Services.AddScoped<DraftTimerService>();
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddSignalR();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "MTGDraft";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Angular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -39,17 +51,19 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+app.UseCors("Angular");
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapAuthRoutes();
 
+app.MapAuthRoutes();
 app.MapDraftSessionRoutes();
 app.MapDraftSessionInfoRoutes();
 app.MapDraftSessionGameRoutes();
-
 app.MapPackRoutes();
 app.MapPlayerRoutes();
 app.MapDeckRoutes();
+app.MapHub<DraftHub>("/DraftHub");
 
 using (var scope = app.Services.CreateScope())
 {

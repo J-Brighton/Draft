@@ -12,50 +12,7 @@ public static class DeckRoutes
 {
     public static void MapDeckRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("api/Players/{playerId}/Decks");
-
-        // create a deck for a player
-        group.MapPost("/", async (int playerId, AddDeckDTO addDeckDTO, DraftContext context) =>
-        {
-            var player = await context.Players.FindAsync(playerId);
-            if (player == null)
-            {
-                return Results.NotFound();
-            }
-
-            var deck = new Deck
-            {
-                Name = addDeckDTO.Name,
-                PlayerId = playerId,
-                DeckCards = addDeckDTO.Cards.Select(c => new DeckCard
-                {
-                    CardId = c.CardId,
-                    IsSideboard = c.IsSideboard
-                }).ToList()
-            };
-
-            context.Decks.Add(deck);
-            await context.SaveChangesAsync();
-            
-            // Reload with includes to populate Card navigation
-            var createdDeck = await context.Decks
-                .Include(d => d.DeckCards)
-                .ThenInclude(dc => dc.Card)
-                .FirstAsync(d => d.Id == deck.Id);
-            
-            var deckDTO = new DeckDTO(
-                createdDeck.Id,
-                createdDeck.Name,
-                createdDeck.PlayerId,
-                createdDeck.DeckCards.Select(dc => new DeckCardDTO(
-                    dc.Id,
-                    dc.CardId,
-                    dc.Card.Name
-                )).ToList()
-            );
-            
-            return Results.Created($"/Players/{playerId}/Decks/{deck.Id}", deckDTO);
-        });
+        var group = app.MapGroup("api/Users/{userId}/Players/{playerId}/Decks");
 
         // get a players decks
         group.MapGet("/", async (int playerId, DraftContext context) =>
@@ -131,5 +88,48 @@ public static class DeckRoutes
 
             return Results.Ok(deckDTO);
         });
+    
+        // create a deck for a player
+        // group.MapPost("/", async (int playerId, AddDeckDTO addDeckDTO, DraftContext context) =>
+        // {
+        //     var player = await context.Players.FindAsync(playerId);
+        //     if (player == null)
+        //     {
+        //         return Results.NotFound();
+        //     }
+
+        //     var deck = new Deck
+        //     {
+        //         Name = addDeckDTO.Name,
+        //         PlayerId = playerId,
+        //         DeckCards = addDeckDTO.Cards.Select(c => new DeckCard
+        //         {
+        //             CardId = c.CardId,
+        //             IsSideboard = c.IsSideboard
+        //         }).ToList()
+        //     };
+
+        //     context.Decks.Add(deck);
+        //     await context.SaveChangesAsync();
+            
+        //     // Reload with includes to populate Card navigation
+        //     var createdDeck = await context.Decks
+        //         .Include(d => d.DeckCards)
+        //         .ThenInclude(dc => dc.Card)
+        //         .FirstAsync(d => d.Id == deck.Id);
+            
+        //     var deckDTO = new DeckDTO(
+        //         createdDeck.Id,
+        //         createdDeck.Name,
+        //         createdDeck.PlayerId,
+        //         createdDeck.DeckCards.Select(dc => new DeckCardDTO(
+        //             dc.Id,
+        //             dc.CardId,
+        //             dc.Card.Name
+        //         )).ToList()
+        //     );
+            
+        //     return Results.Created($"/Players/{playerId}/Decks/{deck.Id}", deckDTO);
+        // });
     }
 }

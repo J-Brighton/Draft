@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MTGDraft.Migrations
 {
     [DbContext(typeof(DraftContext))]
-    [Migration("20260310084324_Draft")]
+    [Migration("20260311071446_Draft")]
     partial class Draft
     {
         /// <inheritdoc />
@@ -73,14 +73,9 @@ namespace MTGDraft.Migrations
                     b.Property<int>("PlayerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PlayerId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Decks");
                 });
@@ -309,10 +304,6 @@ namespace MTGDraft.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MTGDraft.Models.User", null)
-                        .WithMany("Decks")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Player");
                 });
 
@@ -409,8 +400,6 @@ namespace MTGDraft.Migrations
 
             modelBuilder.Entity("MTGDraft.Models.User", b =>
                 {
-                    b.Navigation("Decks");
-
                     b.Navigation("Players");
                 });
 #pragma warning restore 612, 618

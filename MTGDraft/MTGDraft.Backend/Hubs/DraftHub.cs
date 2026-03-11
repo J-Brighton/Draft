@@ -6,11 +6,11 @@ public class DraftHub : Hub
 {
     public async Task JoinDraft(int sessionId)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"joined draft-{sessionId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"draft-{sessionId}");
     }
 
     public async Task LeaveDraft(int sessionId)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"left draft-{sessionId}");
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"draft-{sessionId}");
     }
 }

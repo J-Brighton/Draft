@@ -1,9 +1,8 @@
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MTGDraft.Hubs;
 
-public class DraftTimerService(IServiceScopeFactory scopeFactory/*, IHubContext<DraftHub> hub*/)
+public class DraftTimerService(IServiceScopeFactory scopeFactory, IHubContext<DraftHub> hub)
 {
     private readonly ConcurrentDictionary<int, CancellationTokenSource> _timers = new();
 
@@ -35,8 +34,7 @@ public class DraftTimerService(IServiceScopeFactory scopeFactory/*, IHubContext<
         {
             for (int i = totalSeconds ; i > 0 ; i--)
             {
-                //await hub.Clients.Group($"draft-{sessionId}").SendAsync("Time Left", new { secondsLeft = i });
-                Console.WriteLine($"{sessionId}-{i}");
+                await hub.Clients.Group($"draft-{sessionId}").SendAsync("TimeLeft", i);
                 await Task.Delay(1000, token);
             }
 
@@ -50,12 +48,12 @@ public class DraftTimerService(IServiceScopeFactory scopeFactory/*, IHubContext<
 
         } catch (TaskCanceledException)
         {
-            //await hub.Clients.Group($"draft-{sessionId}").SendAsync("Timer Ended");
+            await hub.Clients.Group($"draft-{sessionId}").SendAsync("Timer Ended");
         }
     }
 
     public async Task BroadcastTimerStart(int sessionId, DateTime deadline)
     {
-        //await hub.Clients.Group($"draft-{sessionId}").SendAsync("TimerStarted", new { deadline });
+        await hub.Clients.Group($"draft-{sessionId}").SendAsync("TimerStarted", new { deadline });
     }
 }

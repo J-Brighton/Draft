@@ -175,8 +175,7 @@ namespace MTGDraft.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    PlayerId = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: true)
+                    PlayerId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,11 +186,6 @@ namespace MTGDraft.Migrations
                         principalTable: "Players",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Decks_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -241,11 +235,6 @@ namespace MTGDraft.Migrations
                 name: "IX_Decks_PlayerId",
                 table: "Decks",
                 column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Decks_UserId",
-                table: "Decks",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PackCards_CardId",

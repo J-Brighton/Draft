@@ -10,11 +10,13 @@ public class DraftEngineService
 {
     private readonly DraftContext _context;
     private readonly DraftTimerService _timer;
+    private readonly IHubContext<DraftHub> _hub;
 
-    public DraftEngineService(DraftContext context, DraftTimerService timer)
+    public DraftEngineService(DraftContext context, DraftTimerService timer, IHubContext<DraftHub> hub)
     {
         _context = context;
         _timer = timer;
+        _hub = hub;
     }
 
     public async Task StartPickTimer(int sessionId)
@@ -57,8 +59,9 @@ public class DraftEngineService
 
         if (session.DraftState == DraftState.Complete)
         {
-            //await hub.Clients.Group($"draft-{sessionId}").SendAsync("Draft Complete, Stopped Timer");
+            await _hub.Clients.Group($"draft-{sessionId}").SendAsync("DraftComplete");
             await StopPickTimer(sessionId);
+            await CreateDraftDecks(sessionId);
         }
         return session;
     }
@@ -77,9 +80,9 @@ public class DraftEngineService
 
         // pick the card
         var pickedCard = session.PickCard(pick);
-
-        // save changes
         await _context.SaveChangesAsync();
+
+        await BroadcastPlayerPick(sessionId, pick.PlayerId);
         return pickedCard;
     }
 
@@ -108,6 +111,7 @@ public class DraftEngineService
                 .First();
 
             session.PickCard(new PickPackCardDTO(player.Id, cardToPick.Id));
+            await BroadcastPlayerPick(sessionId, player.Id);
         }
 
         await _context.SaveChangesAsync();
@@ -139,6 +143,8 @@ public class DraftEngineService
                 .First();
 
             session.PickCard(new PickPackCardDTO(bot.Id, cardToPick.Id));
+            await BroadcastPlayerPick(sessionId, bot.Id);
+
         }
 
         await _context.SaveChangesAsync();
@@ -153,7 +159,6 @@ public class DraftEngineService
                     .ThenInclude(pc => pc.Card)
             .FirstOrDefaultAsync(s => s.Id == sessionId);
         if (session == null) throw new ArgumentException("invalid session id");
-
         if (session.DraftState != DraftState.Complete) throw new InvalidOperationException("draft not complete");
 
         foreach (var player in session.DraftPlayers)
@@ -199,4 +204,8 @@ public class DraftEngineService
         await _context.SaveChangesAsync();
     }
 
+    public async Task BroadcastPlayerPick(int sessionId, int playerId)
+    {
+        await _hub.Clients.Group($"draft-{sessionId}").SendAsync("PlayerPicked", playerId);
+    }
 }

@@ -10,5 +10,4 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public List<Player> Players { get; set; } = new();
-    public List<Deck> Decks { get; set; } = new List<Deck>();
 }
