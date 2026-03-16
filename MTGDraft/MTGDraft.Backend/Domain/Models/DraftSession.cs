@@ -1,0 +1,154 @@
+using MTGDraft.Features.Draft.DTOs;
+using MTGDraft.Features.Players.DTOs;
+using MTGDraft.Enums;
+using MTGDraft.Features.Draft.PackGeneration;
+
+namespace MTGDraft.Models;
+
+public class DraftSession
+{
+    public int Id { get; set; }
+    public string SetCode { get ; set; } = null!;
+    public int PlayerCount { get; set; }
+    public List<Player> DraftPlayers { get; set; } = new List<Player>();
+    public DraftState DraftState { get; set;}
+    public int CurrentPackNumber { get; set; } = 1;
+    public int CurrentPickIndex { get; set; }
+    public DateTime? PickDeadline { get; set; }
+    public bool DraftDirectionClockwise { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<Pack> Packs { get; set; } = new List<Pack>();
+
+    /// <summary>
+    /// adds a player to the draft session before it begins validation for player capacity, if the session is already started or if the player is already in it
+    /// </summary>
+    /// <param name="player">The player you want to add to the session</param>
+    /// <exception cref="InvalidOperationException">thrown if the session is full, the player is already in the session or if the session has already started</exception>
+    public void AddPlayer(Player player)
+    {
+        if (DraftPlayers.Count >= PlayerCount) throw new InvalidOperationException("session is full");
+
+        if (!player.IsBot && DraftPlayers.Any(p => p.Id == player.Id)) throw new InvalidOperationException("player already in session");
+
+        if (DraftState != DraftState.NotStarted) throw new InvalidOperationException("cannot join a started draft");
+
+        DraftPlayers.Add(player);
+        player.DraftSessionSeat = DraftPlayers.Count();
+    }
+
+    /// <summary>
+    /// Starts a draft using a list of pregenerated packs. Validates for correct number of players and whether draft had already started. Initialises draft state, pack number and pick index
+    /// </summary>
+    /// <param name="packs">List of pack objects for this draft</param>
+    /// <exception cref="InvalidOperationException">Thrown if number of joined players isn't playercount or if draft already started</exception>
+    public void StartDraft(List<Pack> packs)
+    {
+        // check for player count
+        if (DraftPlayers.Count != PlayerCount) throw new InvalidOperationException($"Cannot start draft without exactly {PlayerCount} players");
+
+        // check if already started
+        if (DraftState != DraftState.NotStarted) throw new InvalidOperationException("Draft has already started");
+
+        // initialise the draft
+        Packs = packs;
+        DraftState = DraftState.InProgress;
+        CurrentPackNumber = 1;
+        CurrentPickIndex = 0;
+    }
+
+    public PackCard PickCard(PickPackCardDTO pick)
+    {
+        // check if draft is running
+        if (DraftState != DraftState.InProgress) throw new InvalidOperationException("draft is not in progress");
+
+        // check if player exists
+        var player = DraftPlayers.FirstOrDefault(p => p.Id == pick.PlayerId);
+        if (player == null) throw new ArgumentException("invalid player id");
+
+        // check player hasn't already picked
+        if (player.HasPickedThisRound) throw new InvalidOperationException("player has already picked this round");
+
+        // check if it is players pack
+        var playerPack = Packs.FirstOrDefault(p => p.CurrentSeat == player.DraftSessionSeat && p.PackNumber == CurrentPackNumber);
+        if (playerPack == null) throw new InvalidOperationException("no pack at player seat");
+
+        // check if pack contains the selected card
+        var packCard = playerPack.Cards.FirstOrDefault(c => c.Id == pick.PackCardId);
+        if (packCard == null) throw new InvalidOperationException("card doesn't belong to player pack");
+
+        if (packCard.IsPicked) throw new InvalidOperationException("card already picked");
+
+        // pick it
+        packCard.IsPicked = true;
+        packCard.PickedByPlayerId = pick.PlayerId;
+        player.HasPickedThisRound = true;
+
+        return packCard;
+    }
+
+    public void Advance()
+    {
+        // make sure game is in progress
+        if (DraftState != DraftState.InProgress) throw new InvalidOperationException("draft is not in progress");
+
+        // make sure all players have picked
+        if (!DraftPlayers.All(p => p.HasPickedThisRound)) throw new InvalidOperationException("not all players have picked");
+
+        // pass packs around
+        foreach (var pack in Packs)
+        {
+            if (pack.Cards.Any(c => !c.IsPicked))
+            {
+                if (DraftDirectionClockwise)
+                {
+                    pack.CurrentSeat = (pack.CurrentSeat % PlayerCount) + 1;
+                } else
+                {
+                    pack.CurrentSeat = (pack.CurrentSeat - 2 + PlayerCount) % PlayerCount + 1;
+                }
+            }
+        }
+
+        // reset pick bool
+        foreach (var player in DraftPlayers)
+        {
+            player.HasPickedThisRound = false;
+        }
+
+        CurrentPickIndex++;
+
+        bool currentRoundFinished = Packs
+            .Where(p => p.PackNumber == CurrentPackNumber)
+            .All(p => p.Cards.All(c => c.IsPicked));
+
+        if (currentRoundFinished)
+        {
+            CurrentPackNumber++;
+            DraftDirectionClockwise = !DraftDirectionClockwise;
+            CurrentPickIndex = 0;
+        }
+
+        if (CurrentPackNumber > 3)
+        {
+            DraftState = DraftState.Complete;
+            
+        }
+    }
+
+    public void PopulateSession(DraftSession session)
+    {
+        int missingPlayers = session.PlayerCount - session.DraftPlayers.Count;
+        if (missingPlayers <= 0 ) return;
+
+        for (int i = 0 ; i < missingPlayers ; i++)
+        {
+            var bot = new Player
+            {
+                Name = $"Bot {session.DraftPlayers.Count + 1}",
+                IsBot = true
+            };
+
+            session.AddPlayer(bot);
+        }
+    }
+}
