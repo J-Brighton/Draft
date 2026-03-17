@@ -48,6 +48,7 @@ public class PackGenerator : IPackGenerator
                     {
                         CardId = card.Id,
                         IsPicked = false,
+                        Treatment = card.Treatment,
                         FoilType = index == foilSlotIndex 
                             ? Enums.FoilType.TraditionalFoil
                             : card.FoilType

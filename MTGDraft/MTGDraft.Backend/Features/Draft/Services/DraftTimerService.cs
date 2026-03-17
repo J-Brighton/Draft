@@ -2,6 +2,8 @@ using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
 using MTGDraft.Hubs;
 using MTGDraft.Enums;
+using SQLitePCL;
+using MTGDraft.Data;
 
 
 public class DraftTimerService
@@ -24,6 +26,14 @@ public class DraftTimerService
     public async Task StartTimer(int sessionId, DateTime deadline)
     {
         CancelDraft(sessionId);
+
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<DraftContext>();
+
+        var session = await context.DraftSessions.FindAsync(sessionId);
+        if (session == null) throw new InvalidOperationException("Draft session not found");
+        session.PickDeadline = deadline;
+        await context.SaveChangesAsync();
 
         var cts = new CancellationTokenSource();
         _timers[sessionId] = cts;
